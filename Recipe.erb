@@ -168,8 +168,9 @@ hg clone http://www.rosenauer.org/hg/mozilla opensuse-mozilla
 #Build Firefox
 export SHELL=/bin/bash
 
-hg clone https://hg.mozilla.org/mozilla-central
-cd mozilla-central
+wget https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/48.0/source/firefox-48.0.source.tar.xz
+tar -xvf firefox-48.0.source.tar.xz
+cd firefox-48.0
 
 # Apply KDE patches from opensuse
 patch -p1 < ../opensuse-mozilla/firefox-kde.patch
