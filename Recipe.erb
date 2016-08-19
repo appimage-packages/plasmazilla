@@ -167,9 +167,6 @@ cd /usr/src
 ## Get patches
 hg clone http://www.rosenauer.org/hg/mozilla opensuse-mozilla
 
-mkdir -p $FF_PREFIX/bin/defaults/pref/
-cp opensuse-mozilla/MozillaFirefox/kde.js $FF_PREFIX/bin/defaults/pref/kde.js
-
 #Build Firefox
 export SHELL=/bin/bash
 
@@ -197,6 +194,8 @@ EOF
 
 ./mach configure
 ./mach build
+mkdir -p $(MOZ_DISTDIR)/bin/defaults/pref/
+cp opensuse-mozilla/MozillaFirefox/kde.js $(MOZ_DISTDIR)/bin/defaults/pref/kde.js
 ./mach install
 
 mv $FF_PREFIX/lib/firefox-51.0a1 $FF_PREFIX/lib/firefox
