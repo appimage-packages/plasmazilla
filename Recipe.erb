@@ -5,10 +5,11 @@ set -e
 
 # Be verbose
 set -x
-
+mkdir -p /app/usr
 ARCH=$(arch)
 APP=<%= name %>
-VERSION=0.6.4~git20150428+14
+VERSION=48.0
+FF_PREFIX=/app/usr
 export DEBIAN_FRONTEND=noninteractive
 
 # Install what we can via packages
@@ -159,11 +160,15 @@ done
 # Builld the kmozillahelper package from source.
 git clone https://github.com/openSUSE/kmozillahelper
 cd kmozillahelper
-cmake cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr . && make all install
+cmake cmake -DCMAKE_INSTALL_PREFIX:PATH=$FF_PREFIX . && make all install
 
 cd /usr/src
+
 ## Get patches
 hg clone http://www.rosenauer.org/hg/mozilla opensuse-mozilla
+
+mkdir -p $FF_PREFIX/bin/defaults/pref/
+cp opensuse-mozilla/MozillaFirefox/kde.js $FF_PREFIX/bin/defaults/pref/kde.js
 
 #Build Firefox
 export SHELL=/bin/bash
@@ -183,7 +188,7 @@ ac_add_options --enable-official-branding
 ac_add_options --enable-safe-browsing
 ac_add_options --enable-url-classifier
 ac_add_options --enable-startup-notification
-ac_add_options --prefix=/usr
+ac_add_options --prefix=$FF_PREFIX
 ac_add_options --enable-application=browser
 ac_add_options --enable-optimize
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
@@ -194,7 +199,7 @@ EOF
 ./mach build
 ./mach install
 
-mv /usr/lib/firefox-51.0a1 /usr/lib/firefox
+mv $FF_PREFIX/lib/firefox-51.0a1 $FF_PREFIX/lib/firefox
 
 ########################################################################
 # Build complete
@@ -203,9 +208,9 @@ mv /usr/lib/firefox-51.0a1 /usr/lib/firefox
 wget -q https://github.com/probonopd/AppImages/raw/master/functions.sh -O ./functions.sh
 . ./functions.sh
 
-cd /
-mkdir -p /usr/share/applications
-cat > /usr/share/applications/firefox.desktop << EOF
+cd /app
+mkdir -p ./usr/share/applications
+cat > ./usr/share/applications/firefox.desktop << EOF
 [Desktop Entry]
 Version=1.0
 Name=Firefox Web Browser
@@ -429,25 +434,18 @@ Exec=@MOZ_APP_NAME@ -private-window
 OnlyShowIn=Unity;
 EOF
 
-ls /usr/lib/firefox
-cp /usr/share/applications/firefox.desktop .
+ls ./usr/lib/firefox
+cp ./usr/share/applications/firefox.desktop .
 sed -i -e "s|Exec=.*|Exec=firefox|g" firefox.desktop
 sed -i -e "s|Icon=.*|Icon=default48.png|g" firefox.desktop
-cp /usr/lib/firefox/browser/chrome/icons/default/default48.png .
+cp ./usr/lib/firefox/browser/chrome/icons/default/default48.png .
 get_desktopintegration firefox
 
 APPDIR=firefox
 mkdir -p /$APPDIR/$APP.AppDir
 cd  /$APPDIR/$APP.AppDir
-mv /firefox.* .
-mv /default48.png .
+mv /app/* .
 get_apprun
-mkdir -p ./usr/share; mv /usr/share/apport $_
-mv /usr/share/applications ./usr/share
-#mkdir -p ./usr/share/kde4/apps/kmozillahelper; mv /usr/share/kde4/apps/kmozillahelper/kmozillahelper.notifyrc $_
-mv /usr/share/mime ./usr/share
-mkdir -p ./usr/share/icons/hicolor/48
-cp /usr/lib/firefox/browser/chrome/icons/default/default48.png ./usr/share/icons/hicolor/48/
 
 export LD_LIBRARY_PATH=./usr/lib/:$LD_LIBRARY_PATH
 
@@ -455,17 +453,8 @@ patch_usr
 move_lib
 copy_deps # Three runs to ensure we catch indirect ones
 delete_blacklisted
-mkdir -p ./usr/bin
-mv /usr/bin/firefox* ./usr/bin/
-mkdir -p ./usr/lib; mv /usr/lib/firefox $_
-#mv /usr/lib/mozilla ./usr/lib/
 mv /usr/lib/x86_64-linux-gnu/libstartup-notification-1.so* ./usr/lib/
 mv /usr/lib/x86_64-linux-gnu/libxcb-util.so* ./usr/lib/
-mkdir -p $(MOZ_DISTDIR)/bin/defaults/pref/
-cp /opensuse-mozilla/MozillaFirefox/kde.js $(MOZ_DISTDIR)/bin/defaults/pref/kde.js
-#mv /usr/lib/firefox-addons ./usr/lib/
-#mv /etc/firefox ./etc/
-#mv /etc/apparmor.d ./etc/
 
 # We don't bundle the developer stuff
 rm -rf usr/include || true
