@@ -194,9 +194,9 @@ EOF
 
 ./mach configure
 ./mach build
-mkdir -p dist//bin/defaults/pref/
+mkdir -p /usr/src/firefox-48.0/browser/installer/bin/defaults/pref/
 cp /usr/src/opensuse-mozilla/MozillaFirefox/kde.js /usr/src/firefox-48.0/browser/installer/bin/defaults/pref/kde.js
-./mach install
+./mach installdis
 
 mv $FF_PREFIX/lib/firefox-51.0a1 $FF_PREFIX/lib/firefox
 
