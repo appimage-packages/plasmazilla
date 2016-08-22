@@ -74,9 +74,10 @@ class CI
         STDOUT.flush
       end
     end
+    wd = `pwd`
     @c.start( 'Privileged' => true,
-                    'Binds' => ["/home/jenkins/workspace/appimage-plasmazilla/:/in",
-                             "/home/jenkins/workspace/appimage-plasmazilla/out:/out",
+                    'Binds' => ["#{wd}" + ":/in",
+                             "#{wd}" + "/out:/out",
                              "/lib/modules:/lib/modules",
                              "/tmp:/tmp"])
     ret = @c.wait
