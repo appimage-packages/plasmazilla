@@ -193,12 +193,13 @@ mk_add_options MOZ_PKG_BASENAME=firefox
 EOF
 
 ./mach configure
-./mach build
-mkdir -p /usr/src/firefox-48.0/obj-x86_64-pc-linux-gnu/dist/bin/defaults/pref/
-cp /usr/src/opensuse-mozilla/MozillaFirefox/kde.js /usr/src/firefox-48.0/obj-x86_64-pc-linux-gnu/dist/bin/defaults/pref/
-./mach install
+/usr/bin/make -f client.mk build
+ls -l /usr/src/firefox-48/
+mkdir -p /usr/src/firefox-48.0/x86_64-linux-gnu/dist/bin/defaults/pref/
+cp /usr/src/opensuse-mozilla/MozillaFirefox/kde.js /usr/src/firefox-48.0/x86_64-linux-gnu/dist/bin/defaults/pref/
+/usr/bin/make -f client.mk install
 
-mv $FF_PREFIX/lib/firefox-51.0a1 $FF_PREFIX/lib/firefox
+mv $FF_PREFIX/lib/firefox-48.0 $FF_PREFIX/lib/firefox
 
 ########################################################################
 # Build complete
