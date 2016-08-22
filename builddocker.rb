@@ -45,8 +45,8 @@ class CI
   attr_accessor :run
   attr_accessor :cmd
 
-  Docker.options[:read_timeout] = 1 * 120 * 120 # 2 hour
-  Docker.options[:write_timeout] = 1 * 120 * 120 # 2 hour
+  Docker.options[:read_timeout] = 1 * 120 * 120 # 1 hour
+  Docker.options[:write_timeout] = 1 * 120 * 60 # 1 hour
 
   def create_container
     init_logging
@@ -74,10 +74,9 @@ class CI
         STDOUT.flush
       end
     end
-    wd = `pwd`
     @c.start( 'Privileged' => true,
-                    'Binds' => ["#{wd}" + ":/in",
-                             "#{wd}" + "/out:/out",
+                    'Binds' => ["/home/jenkins/workspace/appimage-plasmazilla/:/in",
+                             "/home/jenkins/workspace/appimage-plasmazilla/out:/out",
                              "/lib/modules:/lib/modules",
                              "/tmp:/tmp"])
     ret = @c.wait
