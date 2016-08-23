@@ -194,8 +194,8 @@ EOF
 
 ./mach configure
 /usr/bin/make -f client.mk build
-mkdir -p /usr/src/firefox-48.0/dist/bin/defaults/pref/
-cp /usr/src/opensuse-mozilla/MozillaFirefox/kde.js /usr/src/firefox-48.0/dist/bin/defaults/pref/
+mkdir -p /usr/src/firefox-48.0/dist/firefox/bin/defaults/pref/
+cp /usr/src/opensuse-mozilla/MozillaFirefox/kde.js /usr/src/firefox-48.0/dist/firefox/bin/defaults/pref/
 /usr/bin/make -f client.mk install
 
 #mv $FF_PREFIX/lib/firefox-48.0 $FF_PREFIX/lib/firefox
