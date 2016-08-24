@@ -198,6 +198,7 @@ cp /usr/src/opensuse-mozilla/MozillaFirefox/kde.js /usr/src/firefox-48.0/firefox
 /usr/bin/make -f client.mk install
 
 mv $FF_PREFIX/lib/firefox-48.0 $FF_PREFIX/lib/firefox
+rm -rfv $FF_PREFIX/lib/firefox-devel-48.0
 
 ########################################################################
 # Build complete
@@ -448,10 +449,12 @@ export LD_LIBRARY_PATH=./usr/lib/:$LD_LIBRARY_PATH
 
 patch_usr
 move_lib
-copy_deps # Three runs to ensure we catch indirect ones
+copy_deps
 delete_blacklisted
 mv /usr/lib/x86_64-linux-gnu/libstartup-notification-1.so* ./usr/lib/
 mv /usr/lib/x86_64-linux-gnu/libxcb-util.so* ./usr/lib/
+rm ./usr/bin/firefox
+ln -s ./usr/bin/firefox ./usr/lib/firefox/firefox
 
 # We don't bundle the developer stuff
 rm -rf usr/include || true
