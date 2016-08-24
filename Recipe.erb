@@ -197,7 +197,7 @@ EOF
 cp /usr/src/opensuse-mozilla/MozillaFirefox/kde.js /usr/src/firefox-48.0/firefox-build-dir/dist/bin/defaults/pref/
 /usr/bin/make -f client.mk install
 
-#mv $FF_PREFIX/lib/firefox-48.0 $FF_PREFIX/lib/firefox
+mv $FF_PREFIX/lib/firefox-48.0 $FF_PREFIX/lib/firefox
 
 ########################################################################
 # Build complete
@@ -433,7 +433,7 @@ OnlyShowIn=Unity;
 EOF
 
 cp ./usr/share/applications/firefox.desktop .
-sed -i -e "s|Exec=.*|Exec=firefox|g" firefox.desktop
+sed -i -e "s|Exec=@MOZ_APP_NAME@|Exec=firefox|g" firefox.desktop
 sed -i -e "s|Icon=.*|Icon=default48.png|g" firefox.desktop
 cp ./usr/lib/firefox/browser/chrome/icons/default/default48.png .
 get_desktopintegration firefox
