@@ -454,7 +454,8 @@ delete_blacklisted
 mv /usr/lib/x86_64-linux-gnu/libstartup-notification-1.so* ./usr/lib/
 mv /usr/lib/x86_64-linux-gnu/libxcb-util.so* ./usr/lib/
 rm ./usr/bin/firefox
-ln -s ./usr/lib/firefox/firefox ./usr/bin/firefox 
+mv /in/firefox.sh ./usr/lib/firefox/
+ln -s ./usr/lib/firefox/firefox.sh ./usr/bin/firefox
 
 # We don't bundle the developer stuff
 rm -rf usr/include || true
