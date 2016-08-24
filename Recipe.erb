@@ -434,7 +434,7 @@ OnlyShowIn=Unity;
 EOF
 
 cp ./usr/share/applications/firefox.desktop .
-sed -i -e "s|Exec=@MOZ_APP_NAME@|Exec=firefox|g" firefox.desktop
+sed -i -e "s|Exec=@MOZ_APP_NAME@|Exec=firefox.sh|g" firefox.desktop
 sed -i -e "s|Icon=.*|Icon=default48.png|g" firefox.desktop
 cp ./usr/lib/firefox/browser/chrome/icons/default/default48.png .
 get_desktopintegration firefox
@@ -454,8 +454,7 @@ delete_blacklisted
 mv /usr/lib/x86_64-linux-gnu/libstartup-notification-1.so* ./usr/lib/
 mv /usr/lib/x86_64-linux-gnu/libxcb-util.so* ./usr/lib/
 rm ./usr/bin/firefox
-mv /in/firefox.sh ./usr/lib/firefox/
-ln -s ./usr/lib/firefox/firefox.sh ./usr/bin/firefox
+mv /in/firefox.sh ./usr/bin/firefox.sh
 
 # We don't bundle the developer stuff
 rm -rf usr/include || true
