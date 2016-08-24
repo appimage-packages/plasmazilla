@@ -7,7 +7,7 @@ set -e
 set -x
 mkdir -p /app/usr
 ARCH=$(arch)
-APP=<%= name %>
+APP=firefox
 VERSION=48.0
 FF_PREFIX=/app/usr
 export DEBIAN_FRONTEND=noninteractive
@@ -69,7 +69,7 @@ function build_cmake
     make install
 
 ) }
-#if ( <%= cmake %> == true )
+#if ( true == true )
 #then
 build_cmake cmake
 #fi
@@ -153,7 +153,7 @@ function build_framework
 ) }
 build_framework extra-cmake-modules
 build_framework phonon -DPHONON_BUILD_PHONON4QT5=ON
-for FRAMEWORK in <%= frameworks %>; do
+for FRAMEWORK in attica karchive kcoreaddons kauth kcodecs kconfig ki18n kdoctools kguiaddons kwidgetsaddons kconfigwidgets kwindowsystem kcrash kcompletion kitemviews kiconthemes kdbusaddons kservice kjobwidgets solid sonnet ktextwidgets kglobalaccel kxmlgui kbookmarks kio knotifications knewstuff; do
   build_framework $FRAMEWORK
 done
 
@@ -432,6 +432,7 @@ Exec=@MOZ_APP_NAME@ -private-window
 OnlyShowIn=Unity;
 EOF
 
+ls ./usr/lib/firefox
 cp ./usr/share/applications/firefox.desktop .
 sed -i -e "s|Exec=.*|Exec=firefox|g" firefox.desktop
 sed -i -e "s|Icon=.*|Icon=default48.png|g" firefox.desktop
