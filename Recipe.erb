@@ -445,6 +445,9 @@ cd  /$APPDIR/$APP.AppDir
 mv /app/* .
 mkdir -p ./usr/bin; mv /usr/bin/firefox* $_
 mv /usr/lib/firefox-48.0 ./usr/lib/
+rm ./usr/bin/firefox
+ln -s ./usr/lib/firefox-48.0/firefox ./usr/bin/firefox
+
 get_apprun
 
 export LD_LIBRARY_PATH=./usr/lib/:$LD_LIBRARY_PATH
