@@ -19,7 +19,7 @@ mercurial unzip zip autoconf2.13 libgtk-3-dev libgtk2.0-dev libgconf2-dev libdbu
 libasound2-dev libpulse-dev libxt-dev libx11-dev libx11-xcb-dev libxext-dev libxcb-shm0-dev \
 libhunspell-dev libnspr4-dev libevent-dev cmake libsqlite3-dev libopenvg1-mesa-dev libdouble-conversion-dev \
 libdbus-1-dev libts-dev libfontconfig1-dev libfreetype6-dev perl-modules libstring-escape-perl perl \
-docbook-xml docbook-xsl libxslt1-dev flex bison libssl-dev
+docbook-xml docbook-xsl libxslt1-dev flex bison libssl-dev valgrind
 
 cpan URI::Escape
 
@@ -75,7 +75,7 @@ build_cmake cmake
 #fi
 
 #Build Qt5 source
-export CXXFLAGS="-I/usr/include/libdrm"
+export CXXFLAGS="-I/usr/include/libdrm -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include"
 QTVERSION=5.7.0
 QVERSION_SHORT=5.7
 QTV=5.7.0
@@ -83,8 +83,8 @@ cd /usr/src
 wget http://download.qt.io/archive/qt/${QVERSION_SHORT}/${QTVERSION}/single/qt-everywhere-opensource-src-${QTVERSION}.tar.xz
 tar xvf qt-everywhere-opensource-src-${QTVERSION}.tar.xz
 cd qt-everywhere-opensource-src-$QTV
-./configure -v -release -opensource -confirm-license -no-pkg-config \
-	-no-sql-sqlite -no-gif -qt-libjpeg  \
+./configure -v -release -opensource -confirm-license  \
+	-no-sql-sqlite -no-gif -qt-libjpeg -skip qt3d \
 	-no-qml-debug -no-audio-backend -no-sql-odbc -qt-xcb \
   -no-compile-examples -nomake examples -prefix /usr
 make -j8
@@ -98,7 +98,7 @@ function build_framework
 
     SRC=/kf5
     BUILD=/kf5/build
-    PREFIX=/app/usr
+    PREFIX=/usr
 
     # framework
     FRAMEWORK=$1
@@ -160,7 +160,7 @@ done
 # Build the kmozillahelper package from source.
 git clone https://github.com/openSUSE/kmozillahelper
 cd kmozillahelper
-cmake -DCMAKE_INSTALL_PREFIX:PATH=$FF_PREFIX . && make all install
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/app/usr . && make all install
 
 cd /usr/src
 
@@ -179,16 +179,27 @@ patch -p1 < ../opensuse-mozilla/firefox-kde.patch
 patch -p1 < ../opensuse-mozilla/mozilla-kde.patch
 
 cat > mozconfig << EOF
-ac_add_options --enable-system-hunspell
-ac_add_options --enable-gio
-ac_add_options --enable-official-branding
-ac_add_options --enable-safe-browsing
-ac_add_options --enable-url-classifier
-ac_add_options --enable-startup-notification
 ac_add_options --prefix=$FF_PREFIX
-ac_add_options --enable-application=browser
-ac_add_options --enable-optimize
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
+ac_add_options --enable-release
+ac_add_options --disable-install-strip
+ac_add_options --disable-updater
+ac_add_options --enable-application=browser
+ac_add_options --enable-startup-notification
+ac_add_options --enable-optimize
+ac_add_options --disable-jemalloc
+ac_add_options --enable-valgrind
+mk_add_options MOZ_MAKE_FLAGS=-j8
+ac_add_options --enable-tests
+ac_add_options --enable-crashreporter
+ac_add_options --enable-official-branding
+ac_add_options --enable-gio
+ac_add_options --enable-update-channel=@MOZ_UPDATE_CHANNEL@
+ac_add_options --disable-debug
+ac_add_options --disable-elf-hack
+ac_add_options --with-app-name=firefox
+ac_add_options --enable-profiling
+ac_add_options --disable-webrtc
 mk_add_options MOZ_PKG_BASENAME=firefox
 EOF
 
@@ -197,8 +208,8 @@ EOF
 cp /usr/src/opensuse-mozilla/MozillaFirefox/kde.js /usr/src/firefox-48.0/firefox-build-dir/dist/bin/defaults/pref/
 /usr/bin/make -f client.mk install
 
-#mv $FF_PREFIX/lib/firefox-48.0 $FF_PREFIX/lib/firefox
-
+rm -rfv $FF_PREFIX/lib/firefox-devel-48.0
+#ln -s /usr/lib/firefox-48.0/firefox /usr/bin/firefox
 ########################################################################
 # Build complete
 # Now creating the AppDir
@@ -208,6 +219,7 @@ wget -q https://github.com/probonopd/AppImages/raw/master/functions.sh -O ./func
 
 cd /app
 mkdir -p ./usr/share/applications
+mkdir -p ./usr/bin
 cat > ./usr/share/applications/firefox.desktop << EOF
 [Desktop Entry]
 Version=1.0
@@ -433,22 +445,29 @@ OnlyShowIn=Unity;
 EOF
 
 cp ./usr/share/applications/firefox.desktop .
-sed -i -e "s|Exec=.*|Exec=firefox|g" firefox.desktop
+sed -i -e "s|Exec=@MOZ_APP_NAME@|Exec=firefox|g" firefox.desktop
 sed -i -e "s|Icon=.*|Icon=default48.png|g" firefox.desktop
-cp ./usr/lib/firefox/browser/chrome/icons/default/default48.png .
+cp /app/usr/lib/firefox-48.0/browser/chrome/icons/default/default48.png .
 get_desktopintegration firefox
 
 APPDIR=firefox
 mkdir -p /$APPDIR/$APP.AppDir
 cd  /$APPDIR/$APP.AppDir
 mv /app/* .
+cd ./usr/lib/firefox-48.0/
+wget https://raw.githubusercontent.com/appimage-packages/plasmazilla/master/firefox.sh
+cd  /$APPDIR/$APP.AppDir
+rm ./usr/bin/firefox
+cd ./usr/bin/
+ln -s ../lib/firefox-48.0/firefox firefox
+cd  /$APPDIR/$APP.AppDir
 get_apprun
 
 export LD_LIBRARY_PATH=./usr/lib/:$LD_LIBRARY_PATH
 
 patch_usr
 move_lib
-copy_deps # Three runs to ensure we catch indirect ones
+copy_deps
 delete_blacklisted
 mv /usr/lib/x86_64-linux-gnu/libstartup-notification-1.so* ./usr/lib/
 mv /usr/lib/x86_64-linux-gnu/libxcb-util.so* ./usr/lib/
