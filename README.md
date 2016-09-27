@@ -1,2 +1,2 @@
-# appimage-plasmazilla
-Appimage for KDE Plasma firefox and thunderbird
+# appimage-template
+Appimage template for skanlite KDE scanner application.

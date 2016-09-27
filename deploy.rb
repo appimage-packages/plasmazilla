@@ -15,16 +15,31 @@
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Lesser General Public License for more details.
+# Lesser General Public License fo-r more details.
 #
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
-require_relative 'generate_recipe.rb'
-require_relative 'builddocker.rb'
+require_relative 'libs/builddocker.rb'
 require 'fileutils'
+require 'pty'
+
+system('bundle install')
 
 builder = CI.new
-builder.run = [CI::Build.new()]
-builder.cmd = %w[bash -ex /in/Recipe ; apt-get clean ; rm -rf /usr/src ; rm -rf /out]
-builder.create_container
+builder.run = [CI::Build.new('plasmazilla')]
+builder.cmd = %w[rspec /in/spec/recipe_rspec.rb --fail-fast]
+cmd = builder.create_container
+begin
+  PTY.spawn( cmd ) do |stdout, stdin, pid|
+    begin
+      # Do stuff with the output here. Just printing to show it works
+      stdout.each { |line| print line }
+    rescue Errno::EIO
+      puts "Errno:EIO error, but this probably just means " +
+            "that the process has finished giving output"
+    end
+  end
+rescue PTY::ChildExited
+  puts "The child process exited!"
+end

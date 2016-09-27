@@ -1,0 +1,487 @@
+#!/bin/bash
+
+# Halt on errors
+set -e
+
+# Be verbose
+set -x
+mkdir -p /app/usr
+ARCH=$(arch)
+APP=<%= name %>
+VERSION=48.0
+FF_PREFIX=/app/usr
+export DEBIAN_FRONTEND=noninteractive
+
+# Install what we can via packages
+sudo apt-get update && sudo apt-get -y upgrade
+sudo apt-get -y install software-properties-common shared-mime-info python-xdg  libstartup-notification0-dev \
+mercurial unzip zip autoconf2.13 libgtk-3-dev libgtk2.0-dev libgconf2-dev libdbus-glib-1-dev yasm \
+libasound2-dev libpulse-dev libxt-dev libx11-dev libx11-xcb-dev libxext-dev libxcb-shm0-dev \
+libhunspell-dev libnspr4-dev libevent-dev cmake libsqlite3-dev libopenvg1-mesa-dev libdouble-conversion-dev \
+libdbus-1-dev libts-dev libfontconfig1-dev libfreetype6-dev perl-modules libstring-escape-perl perl \
+docbook-xml docbook-xsl libxslt1-dev flex bison libssl-dev valgrind
+
+cpan URI::Escape
+
+#qt5
+apt-get -y install "^libxcb.*" libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxcb-xinerama0-dev
+sudo apt-get -y build-dep qt5-default
+
+#Get libinput-dev from ppa as it does not exist in archive
+sudo add-apt-repository -y  ppa:jonathonf/backport-builddeps
+sudo apt-get update
+sudo apt-get -y install libinput-dev
+
+function build_cmake
+{ (
+     # errors fatal
+    echo "Compiler version:" $(g++ --version)
+    set -e
+
+    SRC=/cmake
+
+    # framework
+    CMAKE=$1
+
+    # clone if not there
+    mkdir -p $SRC
+    cd $SRC
+    if ( test -d $CMAKE )
+    then
+        echo "$CMAKE already cloned"
+        cd $CMAKE
+        git reset --hard
+        git pull --rebase
+        cd ..
+    else
+        git clone https://github.com/Kitware/CMake cmake
+    fi
+
+
+    cd cmake
+
+    ./bootstrap --prefix=/usr
+
+    # make
+    make -j8
+
+    # install
+    make install
+
+) }
+#if ( <%= cmake %> == true )
+#then
+build_cmake cmake
+#fi
+
+#Build Qt5 source
+export CXXFLAGS="-I/usr/include/libdrm -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include"
+QTVERSION=5.7.0
+QVERSION_SHORT=5.7
+QTV=5.7.0
+cd /usr/src
+wget http://download.qt.io/archive/qt/${QVERSION_SHORT}/${QTVERSION}/single/qt-everywhere-opensource-src-${QTVERSION}.tar.xz
+tar xvf qt-everywhere-opensource-src-${QTVERSION}.tar.xz
+cd qt-everywhere-opensource-src-$QTV
+./configure -v -release -opensource -confirm-license  \
+	-no-sql-sqlite -no-gif -qt-libjpeg -skip qt3d \
+	-no-qml-debug -no-audio-backend -no-sql-odbc -qt-xcb \
+  -no-compile-examples -nomake examples -prefix /usr
+make -j8
+make install
+
+function build_framework
+{ (
+    # errors fatal
+    echo "Compiler version:" $(g++ --version)
+    set -e
+
+    SRC=/kf5
+    BUILD=/kf5/build
+    PREFIX=/usr
+
+    # framework
+    FRAMEWORK=$1
+
+    # branch, optional parameter
+    BRANCH=""
+    if [[ $2 == "branch" ]];
+    then
+        BRANCH=$3
+    fi
+
+    # clone if not there
+    mkdir -p $SRC
+    cd $SRC
+    if ( test -d $FRAMEWORK )
+    then
+        echo "$FRAMEWORK already cloned"
+        cd $FRAMEWORK
+        git reset --hard
+        git pull --rebase
+        cd ..
+    else
+        git clone git://anongit.kde.org/$FRAMEWORK
+    fi
+
+    if( test -n $BRANCH )
+    then
+        cd $FRAMEWORK
+        git checkout $BRANCH
+        cd ..
+    fi
+
+    # create build dir
+    mkdir -p $BUILD/$FRAMEWORK
+
+    # go there
+    cd $BUILD/$FRAMEWORK
+
+    # cmake it
+    if [[ $2 == "branch" ]];
+    then
+        cmake $SRC/$FRAMEWORK -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX $4 $5 $6 $7 $8 $9
+    else
+        cmake $SRC/$FRAMEWORK -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX $2 $3 $4 $5 $6 $7
+    fi
+
+    # make
+    make VERBOSE=1 -j8
+
+    # install
+    make install
+) }
+build_framework extra-cmake-modules
+build_framework phonon -DPHONON_BUILD_PHONON4QT5=ON
+for FRAMEWORK in <%= frameworks %>; do
+  build_framework $FRAMEWORK
+done
+
+# Build the kmozillahelper package from source.
+git clone https://github.com/openSUSE/kmozillahelper
+cd kmozillahelper
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/app/usr . && make all install
+
+cd /usr/src
+
+## Get patches
+hg clone http://www.rosenauer.org/hg/mozilla opensuse-mozilla
+
+#Build Firefox
+export SHELL=/bin/bash
+
+wget https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/48.0/source/firefox-48.0.source.tar.xz
+tar -xvf firefox-48.0.source.tar.xz
+cd firefox-48.0
+
+# Apply KDE patches from opensuse
+patch -p1 < ../opensuse-mozilla/firefox-kde.patch
+patch -p1 < ../opensuse-mozilla/mozilla-kde.patch
+
+cat > mozconfig << EOF
+ac_add_options --prefix=$FF_PREFIX
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
+ac_add_options --enable-release
+ac_add_options --disable-install-strip
+ac_add_options --disable-updater
+ac_add_options --enable-application=browser
+ac_add_options --enable-startup-notification
+ac_add_options --enable-optimize
+ac_add_options --disable-jemalloc
+ac_add_options --enable-valgrind
+mk_add_options MOZ_MAKE_FLAGS=-j8
+ac_add_options --enable-tests
+ac_add_options --enable-crashreporter
+ac_add_options --enable-official-branding
+ac_add_options --enable-gio
+ac_add_options --enable-update-channel=@MOZ_UPDATE_CHANNEL@
+ac_add_options --disable-debug
+ac_add_options --disable-elf-hack
+ac_add_options --with-app-name=firefox
+ac_add_options --enable-profiling
+ac_add_options --disable-webrtc
+mk_add_options MOZ_PKG_BASENAME=firefox
+EOF
+
+./mach configure
+/usr/bin/make -f client.mk build
+cp /usr/src/opensuse-mozilla/MozillaFirefox/kde.js /usr/src/firefox-48.0/firefox-build-dir/dist/bin/defaults/pref/
+/usr/bin/make -f client.mk install
+
+rm -rfv $FF_PREFIX/lib/firefox-devel-48.0
+#ln -s /usr/lib/firefox-48.0/firefox /usr/bin/firefox
+########################################################################
+# Build complete
+# Now creating the AppDir
+########################################################################
+wget -q https://github.com/probonopd/AppImages/raw/master/functions.sh -O ./functions.sh
+. ./functions.sh
+
+cd /app
+mkdir -p ./usr/share/applications
+mkdir -p ./usr/bin
+cat > ./usr/share/applications/firefox.desktop << EOF
+[Desktop Entry]
+Version=1.0
+Name=Firefox Web Browser
+Name[ar]=متصفح الويب فَيَرفُكْس
+Name[ast]=Restolador web Firefox
+Name[bn]=ফায়ারফক্স ওয়েব ব্রাউজার
+Name[ca]=Navegador web Firefox
+Name[cs]=Firefox Webový prohlížeč
+Name[da]=Firefox - internetbrowser
+Name[el]=Περιηγητής Firefox
+Name[es]=Navegador web Firefox
+Name[et]=Firefoxi veebibrauser
+Name[fa]=مرورگر اینترنتی Firefox
+Name[fi]=Firefox-selain
+Name[fr]=Navigateur Web Firefox
+Name[gl]=Navegador web Firefox
+Name[he]=דפדפן האינטרנט Firefox
+Name[hr]=Firefox web preglednik
+Name[hu]=Firefox webböngésző
+Name[it]=Firefox Browser Web
+Name[ja]=Firefox ウェブ・ブラウザ
+Name[ko]=Firefox 웹 브라우저
+Name[ku]=Geroka torê Firefox
+Name[lt]=Firefox interneto naršyklė
+Name[nb]=Firefox Nettleser
+Name[nl]=Firefox webbrowser
+Name[nn]=Firefox Nettlesar
+Name[no]=Firefox Nettleser
+Name[pl]=Przeglądarka WWW Firefox
+Name[pt]=Firefox Navegador Web
+Name[pt_BR]=Navegador Web Firefox
+Name[ro]=Firefox – Navigator Internet
+Name[ru]=Веб-браузер Firefox
+Name[sk]=Firefox - internetový prehliadač
+Name[sl]=Firefox spletni brskalnik
+Name[sv]=Firefox webbläsare
+Name[tr]=Firefox Web Tarayıcısı
+Name[ug]=Firefox توركۆرگۈ
+Name[uk]=Веб-браузер Firefox
+Name[vi]=Trình duyệt web Firefox
+Name[zh_CN]=Firefox 网络浏览器
+Name[zh_TW]=Firefox 網路瀏覽器
+Comment=Browse the World Wide Web
+Comment[ar]=تصفح الشبكة العنكبوتية العالمية
+Comment[ast]=Restola pela Rede
+Comment[bn]=ইন্টারনেট ব্রাউজ করুন
+Comment[ca]=Navegueu per la web
+Comment[cs]=Prohlížení stránek World Wide Webu
+Comment[da]=Surf på internettet
+Comment[de]=Im Internet surfen
+Comment[el]=Μπορείτε να περιηγηθείτε στο διαδίκτυο (Web)
+Comment[es]=Navegue por la web
+Comment[et]=Lehitse veebi
+Comment[fa]=صفحات شبکه جهانی اینترنت را مرور نمایید
+Comment[fi]=Selaa Internetin WWW-sivuja
+Comment[fr]=Naviguer sur le Web
+Comment[gl]=Navegar pola rede
+Comment[he]=גלישה ברחבי האינטרנט
+Comment[hr]=Pretražite web
+Comment[hu]=A világháló böngészése
+Comment[it]=Esplora il web
+Comment[ja]=ウェブを閲覧します
+Comment[ko]=웹을 돌아 다닙니다
+Comment[ku]=Li torê bigere
+Comment[lt]=Naršykite internete
+Comment[nb]=Surf på nettet
+Comment[nl]=Verken het internet
+Comment[nn]=Surf på nettet
+Comment[no]=Surf på nettet
+Comment[pl]=Przeglądanie stron WWW
+Comment[pt]=Navegue na Internet
+Comment[pt_BR]=Navegue na Internet
+Comment[ro]=Navigați pe Internet
+Comment[ru]=Доступ в Интернет
+Comment[sk]=Prehliadanie internetu
+Comment[sl]=Brskajte po spletu
+Comment[sv]=Surfa på webben
+Comment[tr]=İnternet'te Gezinin
+Comment[ug]=دۇنيادىكى توربەتلەرنى كۆرگىلى بولىدۇ
+Comment[uk]=Перегляд сторінок Інтернету
+Comment[vi]=Để duyệt các trang web
+Comment[zh_CN]=浏览互联网
+Comment[zh_TW]=瀏覽網際網路
+GenericName=Web Browser
+GenericName[ar]=متصفح ويب
+GenericName[ast]=Restolador Web
+GenericName[bn]=ওয়েব ব্রাউজার
+GenericName[ca]=Navegador web
+GenericName[cs]=Webový prohlížeč
+GenericName[da]=Webbrowser
+GenericName[el]=Περιηγητής διαδικτύου
+GenericName[es]=Navegador web
+GenericName[et]=Veebibrauser
+GenericName[fa]=مرورگر اینترنتی
+GenericName[fi]=WWW-selain
+GenericName[fr]=Navigateur Web
+GenericName[gl]=Navegador Web
+GenericName[he]=דפדפן אינטרנט
+GenericName[hr]=Web preglednik
+GenericName[hu]=Webböngésző
+GenericName[it]=Browser web
+GenericName[ja]=ウェブ・ブラウザ
+GenericName[ko]=웹 브라우저
+GenericName[ku]=Geroka torê
+GenericName[lt]=Interneto naršyklė
+GenericName[nb]=Nettleser
+GenericName[nl]=Webbrowser
+GenericName[nn]=Nettlesar
+GenericName[no]=Nettleser
+GenericName[pl]=Przeglądarka WWW
+GenericName[pt]=Navegador Web
+GenericName[pt_BR]=Navegador Web
+GenericName[ro]=Navigator Internet
+GenericName[ru]=Веб-браузер
+GenericName[sk]=Internetový prehliadač
+GenericName[sl]=Spletni brskalnik
+GenericName[sv]=Webbläsare
+GenericName[tr]=Web Tarayıcı
+GenericName[ug]=توركۆرگۈ
+GenericName[uk]=Веб-браузер
+GenericName[vi]=Trình duyệt Web
+GenericName[zh_CN]=网络浏览器
+GenericName[zh_TW]=網路瀏覽器
+Keywords=Internet;WWW;Browser;Web;Explorer
+Keywords[ar]=انترنت;إنترنت;متصفح;ويب;وب
+Keywords[ast]=Internet;WWW;Restolador;Web;Esplorador
+Keywords[ca]=Internet;WWW;Navegador;Web;Explorador;Explorer
+Keywords[cs]=Internet;WWW;Prohlížeč;Web;Explorer
+Keywords[da]=Internet;Internettet;WWW;Browser;Browse;Web;Surf;Nettet
+Keywords[de]=Internet;WWW;Browser;Web;Explorer;Webseite;Site;surfen;online;browsen
+Keywords[el]=Internet;WWW;Browser;Web;Explorer;Διαδίκτυο;Περιηγητής;Firefox;Φιρεφοχ;Ιντερνετ
+Keywords[es]=Explorador;Internet;WWW
+Keywords[fi]=Internet;WWW;Browser;Web;Explorer;selain;Internet-selain;internetselain;verkkoselain;netti;surffaa
+Keywords[fr]=Internet;WWW;Browser;Web;Explorer;Fureteur;Surfer;Navigateur
+Keywords[he]=דפדפן;אינטרנט;רשת;אתרים;אתר;פיירפוקס;מוזילה;
+Keywords[hr]=Internet;WWW;preglednik;Web
+Keywords[hu]=Internet;WWW;Böngésző;Web;Háló;Net;Explorer
+Keywords[it]=Internet;WWW;Browser;Web;Navigatore
+Keywords[is]=Internet;WWW;Vafri;Vefur;Netvafri;Flakk
+Keywords[ja]=Internet;WWW;Web;インターネット;ブラウザ;ウェブ;エクスプローラ
+Keywords[nb]=Internett;WWW;Nettleser;Explorer;Web;Browser;Nettside
+Keywords[nl]=Internet;WWW;Browser;Web;Explorer;Verkenner;Website;Surfen;Online
+Keywords[pt]=Internet;WWW;Browser;Web;Explorador;Navegador
+Keywords[pt_BR]=Internet;WWW;Browser;Web;Explorador;Navegador
+Keywords[ru]=Internet;WWW;Browser;Web;Explorer;интернет;браузер;веб;файрфокс;огнелис
+Keywords[sk]=Internet;WWW;Prehliadač;Web;Explorer
+Keywords[sl]=Internet;WWW;Browser;Web;Explorer;Brskalnik;Splet
+Keywords[tr]=İnternet;WWW;Tarayıcı;Web;Gezgin;Web sitesi;Site;sörf;çevrimiçi;tara
+Keywords[uk]=Internet;WWW;Browser;Web;Explorer;Інтернет;мережа;переглядач;оглядач;браузер;веб;файрфокс;вогнелис;перегляд
+Keywords[vi]=Internet;WWW;Browser;Web;Explorer;Trình duyệt;Trang web
+Keywords[zh_CN]=Internet;WWW;Browser;Web;Explorer;网页;浏览;上网;火狐;Firefox;ff;互联网;网站;
+Keywords[zh_TW]=Internet;WWW;Browser;Web;Explorer;網際網路;網路;瀏覽器;上網;網頁;火狐
+Exec=@MOZ_APP_NAME@ %u
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Icon=@MOZ_APP_NAME@
+Categories=GNOME;GTK;Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/chrome;video/webm;application/x-xpinstall;
+StartupNotify=true
+Actions=NewWindow;NewPrivateWindow;
+
+[Desktop Action NewWindow]
+Name=Open a New Window
+Name[ar]=افتح نافذة جديدة
+Name[ast]=Abrir una ventana nueva
+Name[bn]=Abrir una ventana nueva
+Name[ca]=Obre una finestra nova
+Name[cs]=Otevřít nové okno
+Name[da]=Åbn et nyt vindue
+Name[de]=Ein neues Fenster öffnen
+Name[el]=Άνοιγμα νέου παραθύρου
+Name[es]=Abrir una ventana nueva
+Name[fi]=Avaa uusi ikkuna
+Name[fr]=Ouvrir une nouvelle fenêtre
+Name[gl]=Abrir unha nova xanela
+Name[he]=פתיחת חלון חדש
+Name[hr]=Otvori novi prozor
+Name[hu]=Új ablak nyitása
+Name[it]=Apri una nuova finestra
+Name[ja]=新しいウィンドウを開く
+Name[ko]=새 창 열기
+Name[ku]=Paceyeke nû veke
+Name[lt]=Atverti naują langą
+Name[nb]=Åpne et nytt vindu
+Name[nl]=Nieuw venster openen
+Name[pt]=Abrir nova janela
+Name[pt_BR]=Abrir nova janela
+Name[ro]=Deschide o fereastră nouă
+Name[ru]=Новое окно
+Name[sk]=Otvoriť nové okno
+Name[sl]=Odpri novo okno
+Name[sv]=Öppna ett nytt fönster
+Name[tr]=Yeni pencere aç
+Name[ug]=يېڭى كۆزنەك ئېچىش
+Name[uk]=Відкрити нове вікно
+Name[vi]=Mở cửa sổ mới
+Name[zh_CN]=新建窗口
+Name[zh_TW]=開啟新視窗
+Exec=@MOZ_APP_NAME@ -new-window
+OnlyShowIn=Unity;
+
+[Desktop Action NewPrivateWindow]
+Name=Open a New Private Window
+Name[ar]=افتح نافذة جديدة للتصفح الخاص
+Name[ca]=Obre una finestra nova en mode d'incògnit
+Name[de]=Ein neues privates Fenster öffnen
+Name[es]=Abrir una ventana privada nueva
+Name[fi]=Avaa uusi yksityinen ikkuna
+Name[fr]=Ouvrir une nouvelle fenêtre de navigation privée
+Name[he]=פתיחת חלון גלישה פרטית חדש
+Name[hu]=Új privát ablak nyitása
+Name[it]=Apri una nuova finestra anonima
+Name[nb]=Åpne et nytt privat vindu
+Name[ru]=Новое приватное окно
+Name[sl]=Odpri novo okno zasebnega brskanja
+Name[tr]=Yeni bir pencere aç
+Name[uk]=Відкрити нове вікно у потайливому режимі
+Name[zh_TW]=開啟新隱私瀏覽視窗
+Exec=@MOZ_APP_NAME@ -private-window
+OnlyShowIn=Unity;
+EOF
+
+cp ./usr/share/applications/firefox.desktop .
+sed -i -e "s|Exec=@MOZ_APP_NAME@|Exec=firefox|g" firefox.desktop
+sed -i -e "s|Icon=.*|Icon=default48.png|g" firefox.desktop
+cp /app/usr/lib/firefox-48.0/browser/chrome/icons/default/default48.png .
+get_desktopintegration firefox
+
+APPDIR=firefox
+mkdir -p /$APPDIR/$APP.AppDir
+cd  /$APPDIR/$APP.AppDir
+mv /app/* .
+cd ./usr/lib/firefox-48.0/
+wget https://raw.githubusercontent.com/appimage-packages/plasmazilla/master/firefox.sh
+cd  /$APPDIR/$APP.AppDir
+rm ./usr/bin/firefox
+cd ./usr/bin/
+ln -s ../lib/firefox-48.0/firefox firefox
+cd  /$APPDIR/$APP.AppDir
+get_apprun
+
+export LD_LIBRARY_PATH=./usr/lib/:$LD_LIBRARY_PATH
+
+patch_usr
+move_lib
+copy_deps
+delete_blacklisted
+mv /usr/lib/x86_64-linux-gnu/libstartup-notification-1.so* ./usr/lib/
+mv /usr/lib/x86_64-linux-gnu/libxcb-util.so* ./usr/lib/
+
+# We don't bundle the developer stuff
+rm -rf usr/include || true
+rm -rf usr/lib/cmake || true
+rm -rf usr/lib/pkgconfig || true
+find /$APPDIR/$APP.AppDir/usr/lib/ -name '*.la' | xargs -i rm {}
+
+########################################################################
+# AppDir complete
+# Now packaging it as an AppImage
+########################################################################
+cd /$APPDIR
+rm /out/* || true
+generate_appimage
