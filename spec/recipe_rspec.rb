@@ -32,7 +32,6 @@ describe Recipe do
     it "Sets the application name" do
       expect(app.name).to eq metadata['name']
       expect(metadata['dependencies'][1].key?('appimage')).to be(true), "Appimage is missing and it cannot be ommited"
-      expect(system('cmake --version')).to be('> 3.0.0'), "CMake is less than version 3.0.0, things will fail."
     end
   end
 
@@ -69,6 +68,10 @@ describe Recipe do
         end
         expect(sources.run_build(name, buildsystem, options)).to be(0), " Expected 0 exit Status"
       end
+      system('sh /in/functions/env.sh')
+      cmake_version = `cmake --version`
+      p cmake_version
+      expect("#{cmake_version}").to be > 3
     end
   end
 

@@ -20,9 +20,6 @@
 # License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 require 'yaml'
 
-
-
-
 class Sources
   attr_accessor :name
 
@@ -56,6 +53,11 @@ class Sources
       unless Dir.exist?("/app/src/#{name}")
         system("wget #{url}")
         system("tar -jxvf #{name}.tar.bz2")
+      end
+    when 'mercurial'
+      Dir.chdir('/app/src')
+      unless Dir.exist?("/app/src/#{name}")
+        system("hg clone #{url}")
       end
     when 'none'
       p "No sources configured"

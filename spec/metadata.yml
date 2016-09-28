@@ -152,15 +152,15 @@ dep_path:
   - /usr/lib/python2*
   - /usr/bin/python*
 dependencies:
-    - cmake:
-        build:
-          buildsystem: make
-          buildoptions: ''
-        depname: CMake
-        source:
-          type: git
-          url: https://github.com/Kitware/CMake
-          branch: 'master'
+  - cmake:
+      build:
+        buildsystem: make
+        buildoptions: ''
+      depname: CMake
+      source:
+        type: git
+        url: https://github.com/Kitware/CMake
+        branch: 'master'
   - appimage:
       build:
         buildsystem: custom
@@ -204,7 +204,7 @@ dependencies:
   - kmozillahelper:
       build:
         buildsystem: cmake
-        buildoptions: ''
+        buildoptions: '-DCMAKE_INSTALL_PREFIX=/app/usr'
       depname: kmozillahelper
       source:
         type: git
@@ -221,7 +221,7 @@ dependencies:
       build:
         buildsystem: custom
         buildoptions: 'sh /in/functions/build-firefox.sh'
-     depname: firefox-48.0
-     source:
-       type: tar
-       url: https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/48.0/source/firefox-48.0.source.tar.xz
+      depname: firefox-48.0
+      source:
+        type: tar
+        url: https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/48.0/source/firefox-48.0.source.tar.xz
