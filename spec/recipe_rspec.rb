@@ -52,21 +52,24 @@ describe Recipe do
     end
   end
 
-  describe 'build_dep_sources' do
-    it 'Retrieves sources that need to be built from source' do
+  describe 'build_non_kf5_dep_sources' do
+    it 'Builds source dependencies that do not depend on kf5' do
       sources = Sources.new
       deps = metadata['dependencies']
       deps.each do |dep|
         name =  dep.values[0]['depname']
+        kf5 =  dep.values[0]['kf5']
         type = dep.values[0]['source'].values_at('type').to_s.gsub(/\,|\[|\]|\"/, '')
         url = dep.values[0]['source'].values_at('url').to_s.gsub(/\,|\[|\]|\"/, '')
         buildsystem = dep.values[0]['build'].values_at('buildsystem').to_s.gsub(/\,|\[|\]|\"/, '')
         options = dep.values[0]['build'].values_at('buildoptions').to_s.gsub(/\,|\[|\]|\"/, '')
         expect(sources.get_source(name, type, url)).to be(0), " Expected 0 exit Status"
-        unless "#{name}" == 'cpan'
+        unless name == 'cpan'
           expect(Dir.exist?("/app/src/#{name}")).to be(true), "#{name} directory does not exist, something went wrong with source retrieval"
         end
-        expect(sources.run_build(name, buildsystem, options)).to be(0), " Expected 0 exit Status"
+        unless kf5 == true
+          expect(sources.run_build(name, buildsystem, options)).to be(0), " Expected 0 exit Status"
+        end
       end
       system('sh /in/functions/env.sh')
       cmake_version = `cmake --version`
@@ -95,6 +98,26 @@ describe Recipe do
               expect(Dir.exist?("/app/src/#{framework}")).to be(true), "#{framework} directory does not exist, something went wront with source retrieval"
               expect(sources.run_build(framework, 'cmake', options)).to be(0), " Expected 0 exit Status"
             end
+          end
+        end
+      end
+    end
+
+    describe 'build_kf5_dep_sources' do
+      it 'Builds source dependencies that do not depend on kf5' do
+        sources = Sources.new
+        deps = metadata['dependencies']
+        deps.each do |dep|
+          name =  dep.values[0]['depname']
+          kf5 =  dep.values[0]['kf5']
+          type = dep.values[0]['source'].values_at('type').to_s.gsub(/\,|\[|\]|\"/, '')
+          url = dep.values[0]['source'].values_at('url').to_s.gsub(/\,|\[|\]|\"/, '')
+          buildsystem = dep.values[0]['build'].values_at('buildsystem').to_s.gsub(/\,|\[|\]|\"/, '')
+          options = dep.values[0]['build'].values_at('buildoptions').to_s.gsub(/\,|\[|\]|\"/, '')
+          expect(sources.get_source(name, type, url)).to be(0), " Expected 0 exit Status"
+          unless kf5 == false
+            expect(Dir.exist?("/app/src/#{name}")).to be(true), "#{name} directory does not exist, something went wrong with source retrieval"
+            expect(sources.run_build(name, buildsystem, options)).to be(0), " Expected 0 exit Status"
           end
         end
       end
