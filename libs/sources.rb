@@ -46,7 +46,7 @@ class Sources
       Dir.chdir('/app/src/')
       unless Dir.exist?("/app/src/#{name}")
         system("wget #{url}")
-        system("tar -xvf #{name}.tar.xz")
+        system("tar -xvf #{name}*.tar.xz")
       end
     when 'bz2'
       Dir.chdir('/app/src/')

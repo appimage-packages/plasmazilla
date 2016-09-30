@@ -58,7 +58,6 @@ describe Recipe do
       deps = metadata['dependencies']
       deps.each do |dep|
         name =  dep.values[0]['depname']
-        kf5 =  dep.values[0]['kf5']
         type = dep.values[0]['source'].values_at('type').to_s.gsub(/\,|\[|\]|\"/, '')
         url = dep.values[0]['source'].values_at('url').to_s.gsub(/\,|\[|\]|\"/, '')
         buildsystem = dep.values[0]['build'].values_at('buildsystem').to_s.gsub(/\,|\[|\]|\"/, '')
@@ -67,61 +66,59 @@ describe Recipe do
         unless name == 'cpan'
           expect(Dir.exist?("/app/src/#{name}")).to be(true), "#{name} directory does not exist, something went wrong with source retrieval"
         end
-        unless kf5 == true
-          expect(sources.run_build(name, buildsystem, options)).to be(0), " Expected 0 exit Status"
-        end
+        expect(sources.run_build(name, buildsystem, options)).to be(0), " Expected 0 exit Status"
       end
       system('sh /in/functions/env.sh')
       cmake_version = `cmake --version`
       p cmake_version
-      expect("#{cmake_version}").to be > 3
+      #expect("#{cmake_version}").to be > 3
     end
   end
 
-    describe 'build_kf5' do
-      it 'Builds KDE Frameworks from source' do
-        sources = Sources.new
-        system('pwd && ls')
-        kf5 = metadata['frameworks']
-        need = kf5['build_kf5']
-        frameworks = kf5['frameworks']
-        if need == true
-          frameworks.each do |framework|
-            if framework == 'phonon'
-              options = '-DCMAKE_INSTALL_PREFIX:PATH=/app/usr -DBUILD_TESTING=OFF -DPHONON_BUILD_PHONON4QT5=ON'
-              expect(sources.get_source(framework, 'git', "https://anongit.kde.org/#{framework}")).to be(0), "Expected 0 exit status"
-              expect(Dir.exist?("/app/src/#{framework}")).to be(true), "#{framework} directory does not exist, something went wront with source retrieval"
-              expect(sources.run_build(framework, 'cmake', options)).to be(0), " Expected 0 exit Status"
-            else
-              options = '-DCMAKE_INSTALL_PREFIX:PATH=/app/usr -DBUILD_TESTING=OFF'
-              expect(sources.get_source(framework, 'git', "https://anongit.kde.org/#{framework}")).to be(0), "Expected 0 exit status"
-              expect(Dir.exist?("/app/src/#{framework}")).to be(true), "#{framework} directory does not exist, something went wront with source retrieval"
-              expect(sources.run_build(framework, 'cmake', options)).to be(0), " Expected 0 exit Status"
-            end
+  describe 'build_kf5' do
+    it 'Builds KDE Frameworks from source' do
+      sources = Sources.new
+      system('pwd && ls')
+      kf5 = metadata['frameworks']
+      need = kf5['build_kf5']
+      frameworks = kf5['frameworks']
+      if need == true
+        frameworks.each do |framework|
+          if framework == 'phonon'
+            options = '-DCMAKE_INSTALL_PREFIX:PATH=/app/usr -DBUILD_TESTING=OFF -DPHONON_BUILD_PHONON4QT5=ON'
+            expect(sources.get_source(framework, 'git', "https://anongit.kde.org/#{framework}")).to be(0), "Expected 0 exit status"
+            expect(Dir.exist?("/app/src/#{framework}")).to be(true), "#{framework} directory does not exist, something went wront with source retrieval"
+            expect(sources.run_build(framework, 'cmake', options)).to be(0), " Expected 0 exit Status"
+          else
+            options = '-DCMAKE_INSTALL_PREFIX:PATH=/app/usr -DBUILD_TESTING=OFF'
+            expect(sources.get_source(framework, 'git', "https://anongit.kde.org/#{framework}")).to be(0), "Expected 0 exit status"
+            expect(Dir.exist?("/app/src/#{framework}")).to be(true), "#{framework} directory does not exist, something went wront with source retrieval"
+            expect(sources.run_build(framework, 'cmake', options)).to be(0), " Expected 0 exit Status"
           end
         end
       end
     end
+  end
 
     describe 'build_kf5_dep_sources' do
-      it 'Builds source dependencies that do not depend on kf5' do
+      it 'Builds source dependencies that depend on kf5' do
         sources = Sources.new
-        deps = metadata['dependencies']
-        deps.each do |dep|
-          name =  dep.values[0]['depname']
-          kf5 =  dep.values[0]['kf5']
-          type = dep.values[0]['source'].values_at('type').to_s.gsub(/\,|\[|\]|\"/, '')
-          url = dep.values[0]['source'].values_at('url').to_s.gsub(/\,|\[|\]|\"/, '')
-          buildsystem = dep.values[0]['build'].values_at('buildsystem').to_s.gsub(/\,|\[|\]|\"/, '')
-          options = dep.values[0]['build'].values_at('buildoptions').to_s.gsub(/\,|\[|\]|\"/, '')
-          expect(sources.get_source(name, type, url)).to be(0), " Expected 0 exit Status"
-          unless kf5 == false
+        deps = metadata['kf5_deps']
+        if deps
+          deps.each do |dep|
+            name =  dep.values[0]['depname']
+            type = dep.values[0]['source'].values_at('type').to_s.gsub(/\,|\[|\]|\"/, '')
+            url = dep.values[0]['source'].values_at('url').to_s.gsub(/\,|\[|\]|\"/, '')
+            buildsystem = dep.values[0]['build'].values_at('buildsystem').to_s.gsub(/\,|\[|\]|\"/, '')
+            options = dep.values[0]['build'].values_at('buildoptions').to_s.gsub(/\,|\[|\]|\"/, '')
+            expect(sources.get_source(name, type, url)).to be(0), " Expected 0 exit Status"
             expect(Dir.exist?("/app/src/#{name}")).to be(true), "#{name} directory does not exist, something went wrong with source retrieval"
             expect(sources.run_build(name, buildsystem, options)).to be(0), " Expected 0 exit Status"
           end
         end
       end
     end
+
 
     describe 'build_project' do
         it 'Retrieves sources that need to be built from source' do

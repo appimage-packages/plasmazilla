@@ -142,10 +142,9 @@ frameworks:
     - phonon
     - knotifications
     - kwallet
-    - libksane
     - ktextwidgets
-type: git
-url: "http://anongit.kde.org/skanlite"
+type: none
+url: ""
 buildsystem: cmake
 buildoptions: "-DCMAKE_INSTALL_PREFIX=/app/usr -DBUILD_TESTING=OFF"
 dep_path:
@@ -157,7 +156,6 @@ dependencies:
         buildsystem: make
         buildoptions: ''
       depname: CMake
-      kf5: false
       source:
         type: git
         url: https://github.com/Kitware/CMake
@@ -167,7 +165,6 @@ dependencies:
         buildsystem: custom
         buildoptions: ./build.sh
       depname: AppImageKit
-      kf5: false
       source:
         type: git
         url: https://github.com/probonopd/AppImageKit
@@ -176,7 +173,6 @@ dependencies:
         buildsystem: custom
         buildoptions: ./configure -v -release -opensource -confirm-license -no-sql-sqlite -no-gif -qt-libjpeg -skip qt3d -no-qml-debug -no-sql-odbc -qt-xcb -no-compile-examples -nomake examples -prefix /app/usr && make && make install
       depname: qt-everywhere-opensource-src-5.7.0
-      kf5: false
       source:
         type: xz
         url: http://download.qt.io/archive/qt/5.7/5.7.0/single/qt-everywhere-opensource-src-5.7.0.tar.xz
@@ -185,7 +181,6 @@ dependencies:
         buildsystem: qmake
         buildoptions: linuxdeployqt.pro
       depname: linuxdeployqt
-      kf5: false
       source:
         type: git
         url: https://github.com/probonopd/linuxdeployqt.git
@@ -194,7 +189,6 @@ dependencies:
         buildsystem: make
         buildoptions: ''
       depname: patchelf-0.9
-      kf5: false
       source:
         type: bz2
         url: https://nixos.org/releases/patchelf/patchelf-0.9/patchelf-0.9.tar.bz2
@@ -203,23 +197,22 @@ dependencies:
         buildsystem: custom
         buildoptions: cpan URI::Escape
       depname: cpan
-      kf5: false
       source:
         type: none
         url: ''
+kf5_deps:
   - kmozillahelper:
       build:
         buildsystem: cmake
         buildoptions: '-DCMAKE_INSTALL_PREFIX=/app/usr'
       depname: kmozillahelper
-      kf5: true
       source:
         type: git
         url: https://github.com/openSUSE/kmozillahelper
   - firefox-patches:
       build:
         buildsystem: custom
-        buildoptions: ''
+        buildoptions: 'echo "clone only"'
       depname: opensuse-mozilla
       source:
         type: mercurial
@@ -229,7 +222,6 @@ dependencies:
         buildsystem: custom
         buildoptions: 'sh /in/functions/build-firefox.sh'
       depname: firefox-48.0
-      kf5: false
       source:
-        type: tar
+        type: xz
         url: https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/48.0/source/firefox-48.0.source.tar.xz
