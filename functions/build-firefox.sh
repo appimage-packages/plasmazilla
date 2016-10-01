@@ -1,11 +1,12 @@
 #!/bin/bash
+export SHELL=/bin/bash
 cd /app/src/firefox-48.0
 # Apply KDE patches from opensuse
 patch -p1 < ../opensuse-mozilla/firefox-kde.patch
 patch -p1 < ../opensuse-mozilla/mozilla-kde.patch
 
 cat > mozconfig << EOF
-ac_add_options --prefix=$FF_PREFIX
+ac_add_options --prefix=/app/usr
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
 ac_add_options --enable-release
 ac_add_options --disable-install-strip
@@ -31,7 +32,7 @@ EOF
 
 ./mach configure
 /usr/bin/make -f client.mk build
-cp /usr/src/opensuse-mozilla/MozillaFirefox/kde.js /usr/src/firefox-48.0/firefox-build-dir/dist/bin/defaults/pref/
+cp /app/src/opensuse-mozilla/MozillaFirefox/kde.js /app/src/firefox-48.0/firefox-build-dir/dist/bin/defaults/pref/
 /usr/bin/make -f client.mk install
 
 cat > /app/usr/share/applications/firefox.desktop << EOF

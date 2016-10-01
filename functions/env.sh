@@ -5,7 +5,6 @@ export XDG_DATA_DIRS=/app/usr:/app/usr/share:/usr:/usr/share:/root/.local/share
 export XDG_DATA_HOME=$XDG_DATA_HOME:/root/.qttest/share:/root/.local/share
 export XDG_RUNTIME_DIR=/tmp/xdg-runtime-dir
 export XDG_CACHE_HOME=/root/.qttest/cache
-export SHELL=/bin/bash
 which cmake
 cmake --version
 echo $CMAKE_VERSION
