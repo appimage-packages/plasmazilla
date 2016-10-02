@@ -143,7 +143,7 @@ describe Recipe do
 
   describe 'gather_integration' do
     it 'Gather and adjust desktop file' do
-      expect(app.gather_integration(desktop: 'xdgurl')).to be(0), " Expected 0 exit Status"
+      expect(app.gather_integration(desktop: 'fireefox')).to be(0), " Expected 0 exit Status"
       expect(File.exist?("/app/#{app.name}.desktop")).to be(true), "Desktop file does not exist, things will fail"
       expect(File.readlines("/app/#{app.name}.desktop").grep(/Icon/).size > 0).to be(true), "No Icon entry in desktop file will fail this operation."
     end

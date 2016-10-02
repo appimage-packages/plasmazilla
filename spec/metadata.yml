@@ -143,10 +143,10 @@ frameworks:
     - knotifications
     - kwallet
     - ktextwidgets
-type: none
-url: ""
-buildsystem: cmake
-buildoptions: "-DCMAKE_INSTALL_PREFIX=/app/usr -DBUILD_TESTING=OFF"
+type: mercurial
+url: http://www.rosenauer.org/hg/mozilla plasmazilla
+buildsystem: custom
+buildoptions: "echo cloning patches"
 dep_path:
   - /usr/lib/python2*
   - /usr/bin/python*
@@ -212,11 +212,11 @@ kf5_deps:
   - firefox-patches:
       build:
         buildsystem: custom
-        buildoptions: 'echo "clone only"'
-      depname: opensuse-mozilla
+        buildoptions: 'echo cloning patches'
+      depname: plasmazilla
       source:
         type: mercurial
-        url: http://www.rosenauer.org/hg/mozilla opensuse-mozilla
+        url: http://www.rosenauer.org/hg/mozilla plasmazilla
   - firefox:
       build:
         buildsystem: custom
