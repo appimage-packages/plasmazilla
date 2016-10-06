@@ -8,3 +8,6 @@ export XDG_CACHE_HOME=/root/.qttest/cache
 which cmake
 cmake --version
 echo $CMAKE_VERSION
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8

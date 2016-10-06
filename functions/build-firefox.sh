@@ -260,3 +260,4 @@ OnlyShowIn=Unity;
 EOF
 
 cp /app/usr/lib/firefox-48.0/browser/chrome/icons/default/default48.png /app/
+cp /app/usr/share/applications/firefox.desktop /app/

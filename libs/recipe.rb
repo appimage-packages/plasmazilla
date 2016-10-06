@@ -32,6 +32,7 @@ class Recipe
   attr_accessor :packages
   attr_accessor :dep_path
   attr_accessor :repo
+  attr_accessor :type
   attr_accessor :archives
   attr_accessor :md5sum
   attr_accessor :version
@@ -66,10 +67,16 @@ class Recipe
     $?.exitstatus
   end
 
-  def get_git_version(args = {})
+  def set_version(args = {})
+    self.type = args[:type]
+    p "#{type}"
     Dir.chdir("/app/src/#{name}") do
-      self.version = `git describe`.chomp.gsub("release-", "").gsub(/-g.*/, "")
-      p "#{version}"
+      if  "#{type}" == 'git'
+        self.version = `git describe`.chomp.gsub("release-", "").gsub(/-g.*/, "")
+        p "#{version}"
+      else
+        self.version = '1.0'
+      end
     end
   end
 
@@ -77,9 +84,9 @@ class Recipe
     self.desktop = args[:desktop]
     Dir.chdir('/app') do
       system("cp ./usr/share/applications/#{desktop}.desktop .")
-      if File.readlines("/app/#{desktop}.desktop").grep(/Icon/).empty?
-        system("echo 'Icon=' >> /app/#{desktop}.desktop")
-      end
+      # if File.readlines("/app/#{desktop}.desktop").grep(/Icon/).empty?
+      #   system("echo 'Icon=' >> /app/#{desktop}.desktop")
+      # end
       system("sed -i -e 's|Exec=.*|Exec=#{name}|g' #{desktop}.desktop")
       $?.exitstatus
 

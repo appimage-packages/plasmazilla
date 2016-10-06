@@ -135,15 +135,15 @@ describe Recipe do
         end
     end
 
-  describe 'get_git_version' do
+  describe 'set_version' do
     it 'Retrieves the version number from the git repo' do
-      expect(app.get_git_version()).not_to be_nil, "Expected the version not to be nil"
+      expect(app.set_version(type: metadata['type'])).not_to be_nil, "Expected the version not to be nil"
     end
   end
 
   describe 'gather_integration' do
     it 'Gather and adjust desktop file' do
-      expect(app.gather_integration(desktop: 'fireefox')).to be(0), " Expected 0 exit Status"
+      expect(app.gather_integration(desktop: 'firefox')).to be(0), " Expected 0 exit Status"
       expect(File.exist?("/app/#{app.name}.desktop")).to be(true), "Desktop file does not exist, things will fail"
       expect(File.readlines("/app/#{app.name}.desktop").grep(/Icon/).size > 0).to be(true), "No Icon entry in desktop file will fail this operation."
     end
