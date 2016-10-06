@@ -46,8 +46,8 @@ class CI
   attr_accessor :run
   attr_accessor :cmd
 
-  Docker.options[:read_timeout] = 1 * 160 * 160 # 1 hour
-  Docker.options[:write_timeout] = 1 * 160 * 160 # 1 hour
+  Docker.options[:read_timeout] = 1 * 260 * 260 # 1 hour
+  Docker.options[:write_timeout] = 1 * 260 * 260 # 1 hour
 
   def create_container
     init_logging
@@ -82,17 +82,27 @@ host = `hostname`
 
 if host == "scarlett-neon\n"
   @c.start( 'Privileged' => true,
-                      'Binds' => ["/home/scarlett/appimage-packaging/plasmazilla:/in",
-                               "/home/scarlett/appimage-packaging/plasmazilla/out:/out",
+                      'Binds' => ["/home/scarlett/appimage-packaging/appimage-template:/in",
+                               "/home/scarlett/appimage-packaging/appimage-template/out:/out",
                                "/tmp:/tmp",
-                               "/home/scarlett/appimage-packaging/plasmazilla/app:/app"])
-
+                               "/home/scarlett/appimage-packaging/appimage-template/app:/app"])
+elsif  host == "scarlett-maui\n"
+  @c.start( 'Privileged' => true,
+                      'Binds' => ["/home/scarlett/vlc3:/in",
+                               "/home/scarlett/vlc3/out:/out",
+                               "/tmp:/tmp",
+                               "/home/scarlett/vlc3/app:/app"])
+elsif  host == "scarlett-neon-unstable\n"
+  @c.start( 'Privileged' => true,
+                      'Binds' => ["/home/scarlett/appimage-packaging/vlc3:/in",
+                               "/home/scarlett/appimage-packaging/vlc3/out:/out",
+                               "/tmp:/tmp",
+                               "/home/scarlett/appimage-packaging/vlc3/app:/app"])                               
 else
   @c.start( 'Privileged' => true,
-                    'Binds' => ["/home/jenkins/workspace/appimage-plasmazilla/:/in",
-                             "/home/jenkins/workspace/appimage-plasmazilla/out:/out",
+                    'Binds' => ["/home/jenkins/workspace/appimage-${name}/:/in",
                              "/tmp:/tmp",
-                              "/home/jenkins/workspace/appimage-plasmazilla/app:/app"])
+                              "/home/jenkins/workspace/appimage-${name}/app:/app"])
 end
     ret = @c.wait
     status_code = ret.fetch('StatusCode', 1)
