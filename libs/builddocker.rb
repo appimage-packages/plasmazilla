@@ -86,7 +86,7 @@ if host == "scarlett-neon\n"
                                "/home/scarlett/appimage-packaging/#{name}/out:/out",
                                "/tmp:/tmp",
                                "/home/scarlett/appimage-packaging/#{name}/app:/app"])
-elsif  host == "scarlett-maui\n"
+elsif  host == "scarlett-maui-desktop\n"
   @c.start( 'Privileged' => true,
                       'Binds' => ["/home/scarlett/#{name}:/in",
                                "/home/scarlett/#{name}/out:/out",
@@ -100,9 +100,9 @@ elsif  host == "scarlett-neon-unstable\n"
                                "/home/scarlett/appimage-packaging/#{name}/app:/app"])
 else
   @c.start( 'Privileged' => true,
-                    'Binds' => ["/home/jenkins/workspace/appimage-${name}/:/in",
+                    'Binds' => ["/home/jenkins/workspace/appimage-#{name}/:/in",
                              "/tmp:/tmp",
-                              "/home/jenkins/workspace/appimage-${name}/app:/app"])
+                              "/home/jenkins/workspace/appimage-#{name}/app:/app"])
 end
     ret = @c.wait
     status_code = ret.fetch('StatusCode', 1)

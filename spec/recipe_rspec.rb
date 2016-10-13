@@ -141,11 +141,14 @@ describe Recipe do
     end
   end
 
+
   describe 'gather_integration' do
     it 'Gather and adjust desktop file' do
+      name = app.name
+      p name
       expect(app.gather_integration(desktop: 'firefox')).to be(0), " Expected 0 exit Status"
-      expect(File.exist?("/app/#{app.name}.desktop")).to be(true), "Desktop file does not exist, things will fail"
-      expect(File.readlines("/app/#{app.name}.desktop").grep(/Icon/).size > 0).to be(true), "No Icon entry in desktop file will fail this operation."
+      expect(File.exist?("/app/firefox.desktop")).to be(true), "Desktop file does not exist, things will fail"
+      expect(File.readlines("/app/firefox.desktop").grep(/Icon/).size > 0).to be(true), "No Icon entry in desktop file will fail this operation."
     end
   end
 
@@ -156,46 +159,53 @@ describe Recipe do
     end
   end
 
-  describe 'run_integration' do
-    it 'Runs desktop integration to prepare app wrapper' do
-      expect(app.run_integration()).to be(0), " Expected 0 exit Status"
-      expect(File.exist?("/app/usr/bin/#{app.name}.wrapper")).to be(true), "Icon does not exist, things will fail"
-      expect(File.exist?("/app/AppRun")).to be(true), "AppRun missing, things will fail"
-    end
-  end
-
-  describe 'copy_dependencies' do
-    it 'Copies over system installed dependencies' do
-      expect(app.copy_dependencies(dep_path: metadata['dep_path'])).to be(0), " Expected 0 exit Status"
-      expect(File.exist?("/#{app.app_dir}/#{app.desktop}.desktop")).to be(true), "Desktop file does not exist, things will fail"
-      expect(File.exist?("/#{app.app_dir}/#{app.icon}")).to be(true), "Icon does not exist, things will fail"
-    end
-  end
-
-  describe 'copy_libs' do
-    it 'Copies lib dependencies generated with ldd' do
-      expect(app.copy_libs()).to be(0), " Expected 0 exit Status"
-    end
-  end
-
-  describe 'move_lib' do
-    it 'Moves /lib to ./usr/lib where appimage expects them' do
-      app.move_lib
-      expect(Dir["/#{app.app_dir}/lib/*"].empty?).to be(true), "Files still in lib, move them to usr"
-    end
-  end
-
-  describe 'delete_blacklisted' do
-    it 'Deletes blacklisted libraries' do
-      expect(app.delete_blacklisted()).to be(0), " Expected 0 exit Status"
-    end
-  end
-
-  describe 'generate_appimage' do
-     it 'Generate the appimage' do
-       expect(app.generate_appimage()).to eq 0
-       expect(File.exist?("/out/#{app.name}-1.0.1-1-x86_64.AppImage")).to be(true), "Something went wrong, no AppImage"
-       app.clean_workspace
+  describe 'run linuxdeployqt' do
+     it 'Copies lib dependencies generated with ldd' do
+      expect(app.run_linuxdeployqt()).to be(0), " Expected 0 exit Status"
      end
    end
-end
+ end
+#
+#   describe 'run_integration' do
+#     it 'Runs desktop integration to prepare app wrapper' do
+#       expect(app.run_integration()).to be(0), " Expected 0 exit Status"
+#       expect(File.exist?("/app/usr/bin/#{app.name}.wrapper")).to be(true), "Icon does not exist, things will fail"
+#       expect(File.exist?("/app/AppRun")).to be(true), "AppRun missing, things will fail"
+#     end
+#   end
+#
+#   describe 'copy_dependencies' do
+#     it 'Copies over system installed dependencies' do
+#       expect(app.copy_dependencies(dep_path: metadata['dep_path'])).to be(0), " Expected 0 exit Status"
+#       expect(File.exist?("/#{app.app_dir}/#{app.desktop}.desktop")).to be(true), "Desktop file does not exist, things will fail"
+#       expect(File.exist?("/#{app.app_dir}/#{app.icon}")).to be(true), "Icon does not exist, things will fail"
+#     end
+#   end
+#
+#   describe 'copy_libs' do
+#     it 'Copies lib dependencies generated with ldd' do
+#       expect(app.copy_libs()).to be(0), " Expected 0 exit Status"
+#     end
+#   end
+#
+#   describe 'move_lib' do
+#     it 'Moves /lib to ./usr/lib where appimage expects them' do
+#       app.move_lib
+#       expect(Dir["/#{app.app_dir}/lib/*"].empty?).to be(true), "Files still in lib, move them to usr"
+#     end
+#   end
+#
+#   describe 'delete_blacklisted' do
+#     it 'Deletes blacklisted libraries' do
+#       expect(app.delete_blacklisted()).to be(0), " Expected 0 exit Status"
+#     end
+#   end
+#
+#   describe 'generate_appimage' do
+#      it 'Generate the appimage' do
+#        expect(app.generate_appimage()).to eq 0
+#        expect(File.exist?("/out/#{app.name}-1.0.1-1-x86_64.AppImage")).to be(true), "Something went wrong, no AppImage"
+#        app.clean_workspace
+#      end
+#    end
+# end

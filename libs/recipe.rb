@@ -83,7 +83,7 @@ class Recipe
     def gather_integration(args = {})
     self.desktop = args[:desktop]
     Dir.chdir('/app') do
-      system("cp ./usr/share/applications/#{desktop}.desktop .")
+      system("cp ./usr/share/applications/#{desktop}.desktop /app/usr/lib/firefox-48.0/firefox/")
       # if File.readlines("/app/#{desktop}.desktop").grep(/Icon/).empty?
       #   system("echo 'Icon=' >> /app/#{desktop}.desktop")
       # end
@@ -97,7 +97,7 @@ class Recipe
     self.icon = args[:icon]
     self.iconpath = args[:iconpath]
     Dir.chdir('/app') do
-      system("cp #{iconpath}#{icon} . ")
+      system("cp #{iconpath}#{icon} /app/usr/lib/firefox-48.0/firefox/ ")
       system("sed -i -e 's|Icon=.*|Icon=#{icon}|g' #{desktop}.desktop")
       $?.exitstatus
     end
@@ -138,12 +138,24 @@ class Recipe
     end
   end
 
-    def move_lib(args = {})
-      Dir.chdir("#{app_dir}") do
-        system("/bin/bash -xe /in/functions/move_libs.sh")
-        $?.exitstatus
-      end
+  def run_linuxdeployqt(args = {})
+    ENV['PATH']='/app/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+    ENV.fetch('PATH')
+    Dir.chdir("#{app_dir}") do
+      system("/bin/bash -xe /in/functions/env.sh")
+      system('cp /app/src/AppImageKit/AppImage* /app/usr/bin')
+      system('cp /app/src/linuxdeployqt/linuxdeployqt/linuxdeployqt /app/')
+      system('/app/linuxdeployqt /app/usr/lib/firefox-48.0/firefox -appimage -bundle-non-qt-libs -verbose=3')
+      $?.exitstatus
     end
+  end
+
+  def move_lib(args = {})
+    Dir.chdir("#{app_dir}") do
+      system("/bin/bash -xe /in/functions/move_libs.sh")
+      $?.exitstatus
+    end
+  end
 
   def delete_blacklisted(args = {})
     Dir.chdir("#{app_dir}") do
