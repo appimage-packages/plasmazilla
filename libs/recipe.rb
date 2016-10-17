@@ -83,11 +83,11 @@ class Recipe
     def gather_integration(args = {})
     self.desktop = args[:desktop]
     Dir.chdir('/app') do
-      system("cp ./usr/share/applications/#{desktop}.desktop /app/usr/lib/firefox-48.0/firefox/")
+      system("cp ./usr/share/applications/#{desktop}.desktop /app/usr/lib/firefox-48.0/")
       # if File.readlines("/app/#{desktop}.desktop").grep(/Icon/).empty?
       #   system("echo 'Icon=' >> /app/#{desktop}.desktop")
       # end
-      system("sed -i -e 's|Exec=.*|Exec=#{name}|g' #{desktop}.desktop")
+      # system("sed -i -e 's|Exec=.*|Exec=#{name}|g' #{desktop}.desktop")
       $?.exitstatus
 
     end
@@ -97,7 +97,7 @@ class Recipe
     self.icon = args[:icon]
     self.iconpath = args[:iconpath]
     Dir.chdir('/app') do
-      system("cp #{iconpath}#{icon} /app/usr/lib/firefox-48.0/firefox/ ")
+      system("cp #{iconpath}#{icon} /app/usr/lib/firefox-48.0/")
       system("sed -i -e 's|Icon=.*|Icon=#{icon}|g' #{desktop}.desktop")
       $?.exitstatus
     end
@@ -146,6 +146,7 @@ class Recipe
       system('cp /app/src/AppImageKit/AppImage* /app/usr/bin')
       system('cp /app/src/linuxdeployqt/linuxdeployqt/linuxdeployqt /app/')
       system('/app/linuxdeployqt /app/usr/lib/firefox-48.0/firefox -appimage -bundle-non-qt-libs -verbose=3')
+      system('mv /app/usr/lib/*.AppImage /out/)
       $?.exitstatus
     end
   end

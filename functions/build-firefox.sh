@@ -188,7 +188,7 @@ Keywords[uk]=Internet;WWW;Browser;Web;Explorer;Інтернет;мережа;п�
 Keywords[vi]=Internet;WWW;Browser;Web;Explorer;Trình duyệt;Trang web
 Keywords[zh_CN]=Internet;WWW;Browser;Web;Explorer;网页;浏览;上网;火狐;Firefox;ff;互联网;网站;
 Keywords[zh_TW]=Internet;WWW;Browser;Web;Explorer;網際網路;網路;瀏覽器;上網;網頁;火狐
-Exec=@MOZ_APP_NAME@ %u
+Exec=firefox %u
 Terminal=false
 X-MultipleArgs=false
 Type=Application
@@ -235,7 +235,7 @@ Name[uk]=Відкрити нове вікно
 Name[vi]=Mở cửa sổ mới
 Name[zh_CN]=新建窗口
 Name[zh_TW]=開啟新視窗
-Exec=@MOZ_APP_NAME@ -new-window
+Exec=firefox -new-window
 OnlyShowIn=Unity;
 
 [Desktop Action NewPrivateWindow]
@@ -255,9 +255,9 @@ Name[sl]=Odpri novo okno zasebnega brskanja
 Name[tr]=Yeni bir pencere aç
 Name[uk]=Відкрити нове вікно у потайливому режимі
 Name[zh_TW]=開啟新隱私瀏覽視窗
-Exec=@MOZ_APP_NAME@ -private-window
+Exec=firefox -private-window
 OnlyShowIn=Unity;
 EOF
 
-cp /app/usr/lib/firefox-48.0/browser/chrome/icons/default/default48.png /app/
-cp /app/usr/share/applications/firefox.desktop /app/
+cp /app/usr/lib/firefox-48.0/browser/chrome/icons/default/default48.png /app/usr/lib/firefox-48.0/
+cp /app/usr/share/applications/firefox.desktop /app/usr/lib/firefox-48.0/
