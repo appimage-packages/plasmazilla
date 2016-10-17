@@ -146,7 +146,7 @@ class Recipe
       system('cp /app/src/AppImageKit/AppImage* /app/usr/bin')
       system('cp /app/src/linuxdeployqt/linuxdeployqt/linuxdeployqt /app/')
       system('/app/linuxdeployqt /app/usr/lib/firefox-48.0/firefox -appimage -bundle-non-qt-libs -verbose=3')
-      system('mv /app/usr/lib/*.AppImage /out/)
+      system('mv /app/usr/lib/*.AppImage /out/')
       $?.exitstatus
     end
   end
