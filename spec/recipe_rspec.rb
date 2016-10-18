@@ -161,7 +161,7 @@ describe Recipe do
 
   describe 'run linuxdeployqt' do
      it 'Copies lib dependencies generated with ldd' do
-      expect(app.run_linuxdeployqt()).to be(0), " Expected 0 exit Status"      
+      expect(app.run_linuxdeployqt()).to be(0), " Expected 0 exit Status"
      end
    end
  end
@@ -201,11 +201,11 @@ describe Recipe do
 #     end
 #   end
 #
-#   describe 'generate_appimage' do
-#      it 'Generate the appimage' do
-#        expect(app.generate_appimage()).to eq 0
-#        expect(File.exist?("/out/#{app.name}-1.0.1-1-x86_64.AppImage")).to be(true), "Something went wrong, no AppImage"
-#        app.clean_workspace
-#      end
-#    end
+  describe 'generate_appimage' do
+     it 'Generate the appimage' do
+       expect(app.generate_appimage()).to eq 0
+       expect(File.exist?("/out/*.AppImage")).to be(true), "Something went wrong, no AppImage"
+       app.clean_workspace
+     end
+   end
 # end

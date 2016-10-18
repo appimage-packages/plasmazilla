@@ -140,13 +140,13 @@ class Recipe
 
   def run_linuxdeployqt(args = {})
     ENV['PATH']='/app/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+    ENV['LD_LIBRARY_PATH']='/app/usr/lib:/app/usr/lib/x86_64-linux-gnu:/app/usr/lib/Qt-5.7.0:/usr/lib64:/usr/lib'
     ENV.fetch('PATH')
+    ENV.fetch('LD_LIBRARY_PATH')
     Dir.chdir("#{app_dir}") do
-      system("/bin/bash -xe /in/functions/env.sh")
       system('cp /app/src/AppImageKit/AppImage* /app/usr/bin')
       system('cp /app/src/linuxdeployqt/linuxdeployqt/linuxdeployqt /app/')
-      system('/app/linuxdeployqt /app/usr/lib/firefox-48.0/firefox -appimage -bundle-non-qt-libs -verbose=3')
-      system('mv /app/usr/lib/*.AppImage /out/')
+      system('/app/linuxdeployqt /app/usr/lib/mozilla/firefox -appimage -executable=/app/usr/lib/mozilla/kmozillahelper -verbose=3')
       $?.exitstatus
     end
   end
@@ -167,8 +167,7 @@ class Recipe
 
   def generate_appimage(args = {})
     Dir.chdir("/") do
-      File.write('/in/Recipe', render)
-      system("/bin/bash -xe /in/Recipe")
+      system('mv /app/usr/lib/*.AppImage /out/')
     end
     $?.exitstatus
   end
