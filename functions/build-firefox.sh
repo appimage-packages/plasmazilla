@@ -1,5 +1,6 @@
 #!/bin/bash
 export SHELL=/bin/bash
+set -x
 cd /app/src/firefox-48.0
 # Apply KDE patches from opensuse
 patch -p1 < ../opensuse-mozilla/firefox-kde.patch
@@ -261,4 +262,4 @@ EOF
 
 cp /app/usr/lib/firefox-48.0/browser/chrome/icons/default/default48.png /app/usr/lib/firefox-48.0/
 cp /app/usr/share/applications/firefox.desktop /app/usr/lib/firefox-48.0/
-mv /app/usr/lib/firefox-48.0 /app/usr/lib/mozilla
+mv /app/usr/lib/mozilla/kmozillahelper /app/usr/lib/firefox-48.0/
