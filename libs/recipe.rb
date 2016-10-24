@@ -146,8 +146,8 @@ class Recipe
     Dir.chdir("#{app_dir}") do
       system('cp /app/src/AppImageKit/AppImage* /app/usr/bin')
       system('cp /app/src/linuxdeployqt/linuxdeployqt/linuxdeployqt /app/')
-      system('cp /app/usr/lib/mozilla/kmozillahelper /app/usr/lib/firefox-48.0/')
-      system('/app/linuxdeployqt /app/usr/lib/firefox-48.0/firefox -appimage -executable=/app/usr/lib/firefox-48.0/kmozillahelper -verbose=2')
+      #  -executable=/app/usr/lib/firefox-48.0/kmozillahelper  -verbose=3 -always-overwrite -no-strip
+      system('strace -c /app/linuxdeployqt /app/usr/lib/firefox-48.0/firefox -appimage')
       $?.exitstatus
     end
   end
