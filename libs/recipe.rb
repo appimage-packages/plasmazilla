@@ -145,6 +145,7 @@ class Recipe
     ENV.fetch('LD_LIBRARY_PATH')
     Dir.chdir("#{app_dir}") do
       system('cp /app/src/AppImageKit/AppImage* /app/usr/bin')
+      system('cp /app/src/AppImageKit/appimagetool /app/usr/bin')
       system('cp /app/src/linuxdeployqt/linuxdeployqt/linuxdeployqt /app/')
       #  -executable=/app/usr/lib/firefox-48.0/kmozillahelper  -verbose=3 -always-overwrite -no-strip
       system('strace -c /app/linuxdeployqt /app/usr/lib/firefox-48.0/firefox -appimage')
