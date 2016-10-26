@@ -139,16 +139,16 @@ class Recipe
   end
 
   def run_linuxdeployqt(args = {})
-    ENV['PATH']='/app/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-    ENV['LD_LIBRARY_PATH']='/app/usr/lib:/app/usr/lib/x86_64-linux-gnu:/app/usr/lib/Qt-5.7.0:/usr/lib64:/usr/lib'
+    ENV['PATH']='/app/usr/bin:/app/usr/lib/firefox-48.0:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+    ENV['LD_LIBRARY_PATH']='/app/usr/lib:/app/usr/lib/x86_64-linux-gnu:/app/usr/lib/firefox-48.0:/app/usr/lib/Qt-5.7.0:/usr/lib64:/usr/lib'
     ENV.fetch('PATH')
     ENV.fetch('LD_LIBRARY_PATH')
     Dir.chdir("#{app_dir}") do
       system('cp /app/src/AppImageKit/AppImage* /app/usr/bin')
-      system('cp /app/src/AppImageKit/appimagetool /app/')
+      system('cp /app/src/AppImageKit/appimagetool/appimagetool /app/usr/lib/firefox-48.0/')
       system('cp /app/src/linuxdeployqt/linuxdeployqt/linuxdeployqt /app/')
-      #  -executable=/app/usr/lib/firefox-48.0/kmozillahelper  -verbose=3 -always-overwrite -no-strip
-      system('strace -c /app/linuxdeployqt /app/usr/lib/firefox-48.0/firefox -appimage')
+      #  -executable=/app/usr/lib/firefox-48.0/kmozillahelper   -no-strip
+      system('strace -c /app/linuxdeployqt /app/usr/lib/firefox-48.0/firefox -appimage -verbose=3 -always-overwrite')
       $?.exitstatus
     end
   end
