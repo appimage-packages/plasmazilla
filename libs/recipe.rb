@@ -148,7 +148,7 @@ class Recipe
       system('cp /app/src/AppImageKit/appimagetool/appimagetool /app/usr/lib/firefox-48.0/')
       system('cp /app/src/linuxdeployqt/linuxdeployqt/linuxdeployqt /app/')
       #  -executable=/app/usr/lib/firefox-48.0/kmozillahelper   -no-strip
-      system('strace -c /app/linuxdeployqt /app/usr/lib/firefox-48.0/firefox -appimage -verbose=3 -always-overwrite')
+      system('strace -c /app/linuxdeployqt /app/usr/lib/firefox-48.0/firefox -appimage -verbose=3 -always-overwrite -no-strip')
       $?.exitstatus
     end
   end
