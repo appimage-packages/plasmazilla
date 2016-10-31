@@ -169,6 +169,14 @@ dependencies:
       source:
         type: git
         url: https://github.com/probonopd/AppImageKit
+  - appimagetool:
+      build:
+        buildsystem: custom
+        buildoptions: ./build.sh
+      depname: appimagetool
+      source:
+        type: git
+        url: https://github.com/probonopd/appimagetool.git
   - qt5:
       build:
         buildsystem: custom
