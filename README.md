@@ -1,2 +1,2 @@
 # appimage-template
-Appimage template for skanlite KDE scanner application.
+Appimage firefox using plasma dialogs.
