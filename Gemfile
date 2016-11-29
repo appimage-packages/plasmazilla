@@ -1,6 +1,5 @@
-source 'https://rubygems.org'
+source 'http://rubygems.org'
 gem 'bundler'
-gem 'rake'
 gem 'docker-api', git: 'https://github.com/swipely/docker-api'
 gem 'logger'
 gem 'logger-colors'
