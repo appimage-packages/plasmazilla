@@ -144,7 +144,6 @@ frameworks:
     - phonon
     - knotifications
     - kwallet
-    - ktextwidgets
 type: mercurial
 url: http://www.rosenauer.org/hg/mozilla plasmazilla
 buildsystem: custom
