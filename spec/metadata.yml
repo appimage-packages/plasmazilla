@@ -111,6 +111,7 @@ packages:
   - libssl-dev
   - valgrind
   - strace
+  - libxslt1-dev
 frameworks:
   build_kf5: true
   frameworks:
