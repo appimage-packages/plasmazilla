@@ -8,7 +8,6 @@ patch -p1 < ../opensuse-mozilla/mozilla-kde.patch
 
 cat > mozconfig << EOF
 ac_add_options --prefix=/app/usr
-ac_add_options --bindir=/app/usr/bin
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
 ac_add_options --enable-release
 ac_add_options --disable-install-strip
