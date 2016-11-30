@@ -32,7 +32,7 @@ chmod a+x linuxdeployqt-1-x86_64.AppImage
 
 cd /<%= name %>.AppDir
 mkdir -p ./usr/lib/firefox-48.0/; mv /app/usr/lib/firefox-48.0/*firefox* $_
-mkdir -p ./usr/bin; cp /in/functions/firefox.sh $_
+mkdir -p ./usr/bin; ln -s  /usr/lib/firefox-48.0/firefox $_
 mv /app/usr/lib/firefox-48.0/kmozillahelper ./usr/lib/firefox-48.0/
 cp /app/usr/share/applications/*firefox* .
 mkdir -p ./usr/share/applications/; mv /app/usr/share/applications/*firefox*.desktop $_
@@ -50,7 +50,7 @@ glibc_needed
 patch_usr
 delete_blacklisted
 get_apprun
-get_desktopintegration firefox.sh
+get_desktopintegration firefox
 
 # Until this repo stabilizes we will use the appimage.
 # Build AppImageKit
