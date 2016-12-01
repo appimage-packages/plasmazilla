@@ -31,8 +31,7 @@ wget https://github.com/probonopd/linuxdeployqt/releases/download/1/linuxdeployq
 chmod a+x linuxdeployqt-1-x86_64.AppImage
 
 cd /<%= name %>.AppDir
-mkdir -p ./usr/lib/firefox-48.0/; mv /app/usr/lib/firefox-48.0/*firefox* $_
-mkdir -p ./usr/bin; ln -s  /usr/lib/firefox-48.0/firefox $_
+mkdir -p ./usr/bin; mv /app/usr/lib/firefox-48.0/*firefox* $_
 mv /app/usr/lib/firefox-48.0/kmozillahelper ./usr/lib/firefox-48.0/
 cp /app/usr/share/applications/*firefox* .
 mkdir -p ./usr/share/applications/; mv /app/usr/share/applications/*firefox*.desktop $_
