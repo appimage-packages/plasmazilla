@@ -44,7 +44,7 @@ mkdir -p ./usr/lib/firefox; mv /app/usr/lib/firefox-48.0/* ./usr/lib/firefox/
 # For some reason qmlscanner did not catch Dialog, manually copy it in.
 #mkdir -p ./usr/bin/qml/QtQuick/Dialogs; cp -rfv /opt/usr/qml/QtQuick/Dialogs/* $_
 
-export PATH=./usr/lib/firefox:$PATH
+mkdir -p ./usr/bin; cp /in/functions/firefox.sh ./usr/bin/firefox
 
 ls -l
 glibc_needed
