@@ -1,6 +1,6 @@
-#kstars
+#Plasmazilla
 
-[![Build Status](http://aci.pangea.pub/job/pipeline-plasmazilla-appimage/job/master/badge/icon)](http://aci.pangea.pub/job/pipeline-plasmazilla-appimage/job/master/)
+[![Build Status](http://aci.pangea.pub/job/mpipeline-plasmazilla-appimage/job/master/badge/icon)](http://aci.pangea.pub/job/mpipeline-plasmazilla-appimage/job/master/)
 
 Plasmazilla
 
