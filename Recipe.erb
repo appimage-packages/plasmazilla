@@ -74,25 +74,13 @@ EOF
 chmod +x AppRun
 
 cd /<%= name %>.AppDir
-rm -rfv /app/usr/lib/firefox-devel-48.0
-mkdir -p ./usr/lib; mv /app/usr/lib/* $_
+
 cp /app/usr/share/applications/*firefox*.desktop .
-mkdir -p ./usr/share/applications/; mv /app/usr/share/applications/*firefox*.desktop $_
 cp /app/usr/lib/firefox-48.0/*default48.png* .
-mkdir -p ./usr/lib/firefox-48.0; mv /app/usr/lib/firefox-48.0 $_
 
 mkdir -p ./usr/bin; cp /in/functions/firefox.sh ./usr/bin/firefox
-mv /app/usr/bin/* ./usr/bin/
+mv /app/usr/* ./usr/
 
-#KDE files
-mkdir -p ./usr/lib/; mv /app/usr/lib/* $_
-mkdir -p ./usr/share/kservices5; mv /app/usr/share/kservices5/* $_
-mkdir -p ./usr/share/kservicetypes5; mv /app/usr/share/kservicetypes5/* $_
-mkdir -p ./usr/share/kxmlgui5; mv /app/usr/share/kxmlgui5/* $_
-mkdir -p ./usr/share/metainfo; mv  /app/usr/share/metainfo/* $_
-mkdir -p ./etc/xdg; mv /app/etc/xdg/* $_
-mkdir -p ./usr/share/config.kcfg; mv /app/usr/share/config.kcfg/* $_
-mkdir -p ./usr/share/mime/packages; mv /app/usr/share/mime/packages/* $_
 
 ../linuxdeployqt-1-x86_64.AppImage ./usr/lib/firefox-48.0/firefox -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml
 ../linuxdeployqt-1-x86_64.AppImage ./usr/lib/firefox-48.0/kmozillahelper -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml
@@ -104,6 +92,7 @@ get_desktopintegration <%= name %>
 
 #Cleanup
 # We don't bundle the developer stuff
+rm -rfv /app/usr/lib/firefox-devel-48.0
 rm -rf usr/include || true
 rm -rf usr/lib/cmake || true
 rm -rf usr/lib/pkgconfig || true
