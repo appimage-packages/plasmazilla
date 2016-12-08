@@ -75,7 +75,8 @@ EOF
 chmod +x AppRun
 
 cd /<%= name %>.AppDir
-
+cp /app/usr/bin/firefox .
+cp /app/usr/bin/kmozillahelper .
 cp /app/usr/share/applications/*firefox*.desktop .
 cp /app/usr/lib/firefox-48.0/*default48.png* .
 
@@ -86,8 +87,8 @@ mkdir ./etc; mv /app/etc $_
 mkdir -p ./usr/lib/x86_64-linux-gnu/plugins; mv /app/usr/lib/x86_64-linux-gnu/plugins $_
 
 
-../linuxdeployqt-1-x86_64.AppImage ./usr/lib/firefox-48.0/firefox -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml
-../linuxdeployqt-1-x86_64.AppImage ./usr/lib/firefox-48.0/kmozillahelper -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml
+../linuxdeployqt-1-x86_64.AppImage firefox -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml
+../linuxdeployqt-1-x86_64.AppImage kmozillahelper -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml
 
 glibc_needed
 patch_usr
