@@ -81,7 +81,7 @@ cp /app/usr/lib/firefox-48.0/*default48.png* .
 
 mkdir -p ./usr/bin; cp /in/functions/firefox.sh ./usr/bin/firefox
 #Move everything except libs into AppDir
-mv /app/usr/{bin,share} ./usr/
+mkdir ./usr; mv /app/usr/{bin,share} ./usr/
 mkdir ./etc; mv /app/etc $_
 mkdir ./usr/lib/x86_64-linux-gnu/plugins; mv /app/usr/lib/x86_64-linux-gnu/plugins $_
 
