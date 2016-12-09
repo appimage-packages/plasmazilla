@@ -1,4 +1,5 @@
 #!/bin/bash
+mkdir plasmazilla
 export SHELL=/bin/bash
 set -x
 cd /app/src/firefox-48.0
