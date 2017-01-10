@@ -8,7 +8,7 @@ patch -p1 < ../opensuse-mozilla/firefox-kde.patch
 patch -p1 < ../opensuse-mozilla/mozilla-kde.patch
 
 cat > mozconfig << EOF
-ac_add_options --prefix=/app/usr
+ac_add_options --prefix=/opt/usr
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
 ac_add_options --enable-release
 ac_add_options --disable-install-strip
@@ -34,7 +34,7 @@ EOF
 
 ./mach configure
 /usr/bin/make -f client.mk build
-cp /app/src/plasmazilla/MozillaFirefox/kde.js /app/src/firefox-48.0/firefox-build-dir/dist/bin/defaults/pref/
+cp /opt/src/plasmazilla/MozillaFirefox/kde.js /app/src/firefox-48.0/firefox-build-dir/dist/bin/defaults/pref/
 /usr/bin/make -f client.mk install
 
 cat > /app/usr/share/applications/firefox.desktop << EOF
@@ -261,6 +261,6 @@ Exec=firefox -private-window
 OnlyShowIn=Unity;
 EOF
 
-cp /app/usr/lib/firefox-48.0/browser/chrome/icons/default/default48.png /app/usr/lib/firefox-48.0/
-cp /app/usr/share/applications/firefox.desktop /app/usr/lib/firefox-48.0/
-mv /app/usr/lib/mozilla/kmozillahelper /app/usr/lib/firefox-48.0/
+cp /opt/usr/lib/firefox-48.0/browser/chrome/icons/default/default48.png /opt/usr/lib/firefox-48.0/
+cp /opt/usr/share/applications/firefox.desktop /opt/usr/lib/firefox-48.0/
+mv /opt/usr/lib/mozilla/kmozillahelper /opt/usr/lib/firefox-48.0/
