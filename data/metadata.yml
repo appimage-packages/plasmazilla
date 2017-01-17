@@ -165,7 +165,7 @@ kf5_deps:
   - kmozillahelper:
       build:
         buildsystem: cmake
-        buildoptions: '-DCMAKE_INSTALL_PREFIX=/app/usr'
+        buildoptions: '-DCMAKE_INSTALL_PREFIX=/opt/usr'
       depname: kmozillahelper
       source:
         type: git
