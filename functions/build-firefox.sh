@@ -37,7 +37,7 @@ EOF
 cp /app/src/plasmazilla/MozillaFirefox/kde.js /app/src/firefox-48.0/firefox-build-dir/dist/bin/defaults/pref/
 /usr/bin/make -f client.mk install
 
-cat > /app/usr/share/applications/firefox.desktop << EOF
+cat > /opt/usr/share/applications/firefox.desktop << EOF
 [Desktop Entry]
 Version=1.0
 Name=Firefox Web Browser
