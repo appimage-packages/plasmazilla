@@ -1,6 +1,14 @@
 #!/bin/bash
 mkdir plasmazilla
 export SHELL=/bin/bash
+export PATH='/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+export LD_LIBRARY_PATH='/opt/usr/lib:/opt/usr/lib/x86_64-linux-gnu:/usr/lib:/usr/lib/x86_64-linux-gnu:/usr/lib64:/usr/lib:/lib:/lib64'
+export CPLUS_INCLUDE_PATH='/opt/usr:/opt/usr/include:/usr/include'
+export CFLAGS="-g -O2 -fPIC"
+export CXXFLAGS='-std=gnu++0x'
+export PKG_CONFIG_PATH='/opt/usr/lib/pkgconfig:/opt/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig'
+export ACLOCAL_PATH='/opt/usr/share/aclocal:/usr/share/aclocal'
+export XDG_DATA_DIRS='/opt/usr/share:/opt/share:/usr/local/share/:/usr/share:/share'
 set -x
 cd /app/src/firefox-50.1.0
 # Apply KDE patches from opensuse
