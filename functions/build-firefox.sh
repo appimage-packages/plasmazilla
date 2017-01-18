@@ -2,7 +2,7 @@
 mkdir plasmazilla
 export SHELL=/bin/bash
 set -x
-cd /app/src/firefox-48.0
+cd /app/src/firefox-50.1.0
 # Apply KDE patches from opensuse
 patch -p1 < ../opensuse-mozilla/firefox-kde.patch
 patch -p1 < ../opensuse-mozilla/mozilla-kde.patch
@@ -261,6 +261,6 @@ Exec=firefox -private-window
 OnlyShowIn=Unity;
 EOF
 
-cp /opt/usr/lib/firefox-48.0/browser/chrome/icons/default/default48.png /opt/usr/lib/firefox-48.0/
-cp /opt/usr/share/applications/firefox.desktop /opt/usr/lib/firefox-48.0/
-mv /opt/usr/lib/mozilla/kmozillahelper /opt/usr/lib/firefox-48.0/
+cp /opt/usr/lib/firefox-48.0/browser/chrome/icons/default/default48.png /opt/usr/lib/firefox-50.1.0/
+cp /opt/usr/share/applications/firefox.desktop /opt/usr/lib/firefox-50.1.0/
+mv /opt/usr/lib/mozilla/kmozillahelper /opt/usr/lib/firefox-50.1.0/

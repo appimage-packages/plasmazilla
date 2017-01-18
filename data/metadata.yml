@@ -113,6 +113,7 @@ packages:
   - strace
   - libxslt1-dev
   - librdf0-dev
+  - libnss3-dev
 frameworks:
   build_kf5: true
   frameworks:
@@ -182,7 +183,7 @@ kf5_deps:
       build:
         buildsystem: custom
         buildoptions: 'sh /in/functions/build-firefox.sh'
-      depname: firefox-48.0
+      depname: firefox-50.1.0
       source:
         type: xz
-        url: https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/48.0/source/firefox-48.0.source.tar.xz
+        url: https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/50.1.0/source/firefox-50.1.0.source.tar.xz
