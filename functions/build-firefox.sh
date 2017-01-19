@@ -269,6 +269,6 @@ Exec=firefox -private-window
 OnlyShowIn=Unity;
 EOF
 
-cp /opt/usr/lib/firefox-48.0/browser/chrome/icons/default/default48.png /opt/usr/lib/firefox-50.1.0/
+cp /opt/usr/lib/firefox-50.1.0/browser/chrome/icons/default/default48.png /opt/usr/lib/firefox-50.1.0/
 cp /opt/usr/share/applications/firefox.desktop /opt/usr/lib/firefox-50.1.0/
 mv /opt/usr/lib/mozilla/kmozillahelper /opt/usr/lib/firefox-50.1.0/
