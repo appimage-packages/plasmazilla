@@ -147,7 +147,7 @@ frameworks:
     - knotifications
     - kwallet
 type: mercurial
-url: http://www.rosenauer.org/hg/mozilla plasmazilla
+url: http://www.rosenauer.org/hg/mozilla
 buildsystem: custom
 buildoptions: "echo cloning patches"
 dep_path:

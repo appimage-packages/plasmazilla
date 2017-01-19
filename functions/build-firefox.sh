@@ -1,5 +1,4 @@
 #!/bin/bash
-mkdir plasmazilla
 export SHELL=/bin/bash
 export PATH='/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 export LD_LIBRARY_PATH='/opt/usr/lib:/opt/usr/lib/x86_64-linux-gnu:/usr/lib:/usr/lib/x86_64-linux-gnu:/usr/lib64:/usr/lib:/lib:/lib64'
