@@ -1,4 +1,5 @@
 #!/bin/bash
+mkdir /in/plasmazilla
 export SHELL=/bin/bash
 export PATH='/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 export LD_LIBRARY_PATH='/opt/usr/lib:/opt/usr/lib/x86_64-linux-gnu:/usr/lib:/usr/lib/x86_64-linux-gnu:/usr/lib64:/usr/lib:/lib:/lib64'
@@ -11,8 +12,8 @@ export XDG_DATA_DIRS='/opt/usr/share:/opt/share:/usr/local/share/:/usr/share:/sh
 set -x
 cd /app/src/firefox-50.1.0
 # Apply KDE patches from opensuse
-patch -p1 < ../opensuse-mozilla/firefox-kde.patch
-patch -p1 < ../opensuse-mozilla/mozilla-kde.patch
+patch -p1 < ../plasmazilla/firefox-kde.patch
+patch -p1 < ../plasmazilla/mozilla-kde.patch
 
 cat > mozconfig << EOF
 ac_add_options --prefix=/opt/usr
