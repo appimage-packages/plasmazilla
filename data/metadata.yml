@@ -69,6 +69,7 @@ frameworks:
     - kjobwidgets
     - kio
     - phonon
+    - phonon-gstreamer
     - knotifications
     - kwallet
 type: mercurial
