@@ -12,7 +12,7 @@ set -e
 #  Chris Coulson <chris.coulson@canonical.com>
 # License: GPLv2 or later
 
-MOZ_LIBDIR=/usr/lib/firefox-50.1.0
+MOZ_LIBDIR=./usr/lib/firefox-50.1.0
 MOZ_APP_LAUNCHER=./usr/lib/firefox-50.1.0/firefox
 MOZ_APP_NAME=firefox
 
