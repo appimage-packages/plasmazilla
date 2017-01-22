@@ -11,7 +11,8 @@ export ACLOCAL_PATH='/opt/usr/share/aclocal:/usr/share/aclocal'
 export XDG_DATA_DIRS='/opt/usr/share:/opt/share:/usr/local/share/:/usr/share:/share'
 set -x
 cd /app/src/plasmazilla
-hg pull -u firefox51
+ls -l
+hg up firefox51
 cd /app/src/firefox-50.1.0
 # Apply KDE patches from opensuse
 patch -p1 < ../plasmazilla/firefox-kde.patch
