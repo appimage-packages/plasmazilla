@@ -10,14 +10,16 @@ export PKG_CONFIG_PATH='/opt/usr/lib/pkgconfig:/opt/usr/lib/x86_64-linux-gnu/pkg
 export ACLOCAL_PATH='/opt/usr/share/aclocal:/usr/share/aclocal'
 export XDG_DATA_DIRS='/opt/usr/share:/opt/share:/usr/local/share/:/usr/share:/share'
 set -x
+cd /app/src/plasmazilla
+hg pull -u firefox51
 cd /app/src/firefox-50.1.0
 # Apply KDE patches from opensuse
 patch -p1 < ../plasmazilla/firefox-kde.patch
 patch -p1 < ../plasmazilla/mozilla-kde.patch
-patch -p1 < ../firefox-no-default-ualocale.patch
-patch -p1 < ../mozilla-flex_buffer_overrun.patch
-patch -p1 < ../mozilla-language.patch
-patch -p1 < ../mozilla-nongnome-proxies.patch
+patch -p1 < ../plasmazilla/firefox-no-default-ualocale.patch
+patch -p1 < ../plasmazilla/mozilla-flex_buffer_overrun.patch
+patch -p1 < ../plasmazilla/mozilla-language.patch
+patch -p1 < ../plasmazilla/mozilla-nongnome-proxies.patch
 
 cat > mozconfig << EOF
 ac_add_options --prefix=/opt/usr
