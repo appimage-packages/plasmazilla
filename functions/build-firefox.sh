@@ -14,13 +14,11 @@ cd /app/src/plasmazilla
 ls -l
 hg up firefox51
 cd /app/src/firefox-50.1.0
+
+
 # Apply KDE patches from opensuse
-patch -p1 < ../plasmazilla/firefox-kde.patch
-patch -p1 < ../plasmazilla/mozilla-kde.patch
-patch -p1 < ../plasmazilla/firefox-no-default-ualocale.patch
-patch -p1 < ../plasmazilla/mozilla-flex_buffer_overrun.patch
-patch -p1 < ../plasmazilla/mozilla-language.patch
-patch -p1 < ../plasmazilla/mozilla-nongnome-proxies.patch
+patch -p1 < ../plasmazilla/MozillaFirefox/firefox-kde.patch
+patch -p1 < ../plasmazilla/MozillaFirefox/mozilla-kde.patch
 
 cat > mozconfig << EOF
 ac_add_options --prefix=/opt/usr
@@ -34,9 +32,8 @@ ac_add_options --enable-optimize
 ac_add_options --disable-jemalloc
 ac_add_options --enable-valgrind
 mk_add_options MOZ_MAKE_FLAGS=-j8
-ac_add_options --enable-tests
 ac_add_options --enable-crashreporter
-ac_add_options --enable-official-branding
+ac_add_options --enable-unofficial-branding
 ac_add_options --enable-gio
 ac_add_options --enable-update-channel=@MOZ_UPDATE_CHANNEL@
 ac_add_options --disable-debug
@@ -48,9 +45,10 @@ mk_add_options MOZ_PKG_BASENAME=firefox
 EOF
 
 ./mach configure
-/usr/bin/make -f client.mk build
+
 cp /app/src/plasmazilla/MozillaFirefox/kde.js /app/src/firefox-50.1.0/firefox-build-dir/dist/bin/defaults/pref/
-/usr/bin/make -f client.mk install
+/usr/bin/make -f client.mk build
+
 
 cat > /opt/usr/share/applications/firefox.desktop << EOF
 [Desktop Entry]
