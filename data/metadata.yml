@@ -1,4 +1,5 @@
 name: plasmazilla
+binary: firefox
 packages:
   - build-essential
   #app specifc

@@ -36,7 +36,7 @@ chmod a+x linuxdeployqt-1-x86_64.AppImage
 cd /<%= name %>.AppDir
 
 #Move binary/desktop/icon into AppDir
-cp /opt/usr/bin/firefox .
+cp /opt/usr/bin/<%= binary %> .
 cp /opt/usr/lib/firefox-50.1.0/kmozillahelper .
 cp /opt/usr/share/applications/*firefox*.desktop .
 cp /opt/usr/lib/firefox-50.1.0/*default48.png* .
@@ -130,7 +130,7 @@ export KDE_FORK_SLAVES=1
 export GST_PLUGIN_PATH=\$HERE/lib
 export GST_PLUGIN_SCANNER=\$HERE/bin
 
-firefox $@
+<%= binary %> $@
 EOF
 chmod +x AppRun
 mv firefox ./usr/bin/
