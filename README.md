@@ -1,10 +1,13 @@
-#Plasmazilla
+# plasmazilla
+Master branch:
+[![Build Status](http://aci.pangea.pub/job/plasmazilla-master-appimage/badge/icon)](http://aci.pangea.pub/job/plasmazilla-master-appimage/)
 
-[![Build Status](http://aci.pangea.pub/job/mpipeline-plasmazilla-appimage/job/master/badge/icon)](http://aci.pangea.pub/job/mpipeline-plasmazilla-appimage/job/master/)
+AppImage for KDE plasmazilla
 
-Plasmazilla
+Plasma friendly Firefox
 
-Firefox with Plasma Support
-
-https://build.opensuse.org/package/show?package=MozillaFirefox&project=openSUSE%3AFactory
 https://github.com/plasmazilla
+
+S3 Download:
+master:
+https://s3-eu-central-1.amazonaws.com/ds9-apps/index.html#!/plasmazilla-master-appimage%2F
