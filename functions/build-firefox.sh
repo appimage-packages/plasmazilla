@@ -33,7 +33,6 @@ ac_add_options --disable-jemalloc
 ac_add_options --enable-valgrind
 mk_add_options MOZ_MAKE_FLAGS=-j8
 ac_add_options --enable-crashreporter
-ac_add_options --enable-unofficial-branding
 ac_add_options --enable-gio
 ac_add_options --enable-update-channel=@MOZ_UPDATE_CHANNEL@
 ac_add_options --disable-debug
