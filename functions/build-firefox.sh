@@ -17,8 +17,8 @@ cd /app/src/firefox-50.1.0
 
 
 # Apply KDE patches from opensuse
-patch -p1 < ../plasmazilla/MozillaFirefox/firefox-kde.patch
-patch -p1 < ../plasmazilla/MozillaFirefox/mozilla-kde.patch
+patch -p1 < ../plasmazilla/firefox-kde.patch
+patch -p1 < ../plasmazilla/mozilla-kde.patch
 
 cat > mozconfig << EOF
 ac_add_options --prefix=/opt/usr
