@@ -12,7 +12,7 @@ export XDG_DATA_DIRS='/opt/usr/share:/opt/share:/usr/local/share/:/usr/share:/sh
 set -x
 cd /app/src/plasmazilla
 ls -l
-hg up firefox51
+#hg up firefox51
 cd /app/src/firefox-50.1.0
 
 
