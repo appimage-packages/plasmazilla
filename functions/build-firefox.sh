@@ -47,7 +47,7 @@ EOF
 
 cp ../plasmazilla/MozillaFirefox/kde.js /app/src/firefox-50.1.0/firefox-build-dir/dist/bin/defaults/pref/
 /usr/bin/make -f client.mk build
-make install
+ /usr/bin/make -f client.mk install
 
 
 cat > /opt/usr/share/applications/firefox.desktop << EOF
