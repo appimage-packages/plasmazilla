@@ -45,7 +45,7 @@ EOF
 
 ./mach configure
 
-cp ../plasmazilla/kde.js /app/src/firefox-50.1.0/firefox-build-dir/bin/defaults/pref/
+cp ../plasmazilla/kde.js /app/src/firefox-50.1.0/firefox-build-dir/dist/bin/defaults/pref/
 /usr/bin/make -f client.mk build
  /usr/bin/make -f client.mk install
 
