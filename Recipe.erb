@@ -63,8 +63,8 @@ cp -rfv /usr/share/mime ./usr/share/
 cp /etc/mime.types ./etc/
 update-mime-database ./usr/share/mime
 
-strip -g $(find usr/bin) || true
-strip -g $(find usr/lib) || true
+strip -g $(find ./usr/bin) || true
+strip -g $(find ./usr/lib) || true
 
 mv /opt/usr/libexec/kf5/* ./usr/bin/ || true
 mv /opt/usr/lib/x86_64-linux-gnu/libexec/kf5/* ./usr/bin/ || true
@@ -133,7 +133,7 @@ export GST_PLUGIN_SCANNER=\$HERE/bin
 <%= binary %> $@
 EOF
 chmod +x AppRun
-mv firefox ./usr/bin/
+cp /in/functions/firefox.sh ./usr/bin/firefox
 cp firefox.desktop ./usr/share/applications/
 cd /
 wget "https://github.com/probonopd/AppImageKit/releases/download/knowngood/appimagetool-x86_64.AppImage"
