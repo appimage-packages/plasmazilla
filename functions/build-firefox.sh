@@ -44,10 +44,9 @@ mk_add_options MOZ_PKG_BASENAME=firefox
 EOF
 
 ./mach configure
-mkdir -p  /app/src/firefox-50.1.0/firefox-build-dir/dist/bin/defaults/pref/
-cp /app/src/plasmazilla/MozillaFirefox/kde.js /app/src/firefox-50.1.0/firefox-build-dir/dist/bin/defaults/pref/
 
 /usr/bin/make -f client.mk build
+cp /app/src/plasmazilla/MozillaFirefox/kde.js /app/src/firefox-50.1.0/firefox-build-dir/dist/bin/defaults/pref/
  /usr/bin/make -f client.mk install
 
 
