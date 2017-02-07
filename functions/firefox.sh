@@ -13,7 +13,7 @@ set -e
 # License: GPLv2 or later
 
 MOZ_LIBDIR=./lib
-MOZ_APP_LAUNCHER=./usr/bin/firefox
+MOZ_APP_LAUNCHER=firefox
 MOZ_APP_NAME=firefox
 
 export MOZ_APP_LAUNCHER
