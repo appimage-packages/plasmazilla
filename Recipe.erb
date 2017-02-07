@@ -53,7 +53,6 @@ rsync -aruxv --progress /opt/usr/share/ ./usr/share/
 rsync -aruxv --progress /opt/etc/ ./etc/
 rsync -aruxv --progress /opt/usr/qml/ ./qml
 cp /usr/lib/x86_64-linux-gnu/pulseaudio/*.so* ./usr/lib/
-
 cp /opt/usr/bin/gst* ./usr/bin/
 mkdir ./lib
 rm -rfv /opt/usr/lib/gstreamer-1.0/include
@@ -69,6 +68,7 @@ strip -g $(find ./usr/lib) || true
 mv /opt/usr/libexec/kf5/* ./usr/bin/ || true
 mv /opt/usr/lib/x86_64-linux-gnu/libexec/kf5/* ./usr/bin/ || true
 mv /opt/usr/libexec/gstreamer-1.0/* ./usr/bin || true
+mv /opt/usr/lib/firefox-50.1.0 ./usr/lib/
 cp -rfv /opt/usr/lib/x86_64-linux-gnu/* /opt/usr/lib/
 unset LD_LIBRARY_PATH
 ../linuxdeployqt-1-x86_64.AppImage firefox -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml
