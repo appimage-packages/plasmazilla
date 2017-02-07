@@ -36,7 +36,7 @@ chmod a+x linuxdeployqt-1-x86_64.AppImage
 cd /<%= name %>.AppDir
 
 #Move binary/desktop/icon into AppDir
-cp /opt/usr/bin/<%= binary %> .
+cp /opt/usr/lib/firefox-50.1.0/<%= binary %> .
 cp /opt/usr/lib/firefox-50.1.0/kmozillahelper .
 cp /opt/usr/share/applications/*firefox*.desktop .
 cp /opt/usr/lib/firefox-50.1.0/*default48.png* .
@@ -68,7 +68,6 @@ strip -g $(find ./usr/lib) || true
 mv /opt/usr/libexec/kf5/* ./usr/bin/ || true
 mv /opt/usr/lib/x86_64-linux-gnu/libexec/kf5/* ./usr/bin/ || true
 mv /opt/usr/libexec/gstreamer-1.0/* ./usr/bin || true
-mv /opt/usr/lib/firefox-50.1.0 ./usr/lib/
 cp -rfv /opt/usr/lib/x86_64-linux-gnu/* /opt/usr/lib/
 unset LD_LIBRARY_PATH
 ../linuxdeployqt-1-x86_64.AppImage firefox -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml
